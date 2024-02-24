@@ -1,8 +1,7 @@
 ﻿#pragma once
-#include <iostream>
 
 #include "drop_data.h"
-#include "../single_include/nlohmann/json.hpp"
+#include "../nlohmann/json.hpp"
 
 enum minion_type
 {
@@ -42,4 +41,6 @@ struct minion
     static minion deserialize(const nlohmann::json& json_data);
 
     void print_minion_info() const;
+
+    static std::map<std::string, minion> minions;
 };

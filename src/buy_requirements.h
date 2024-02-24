@@ -2,7 +2,7 @@
 #include <string>
 #include <vector>
 
-#include "../single_include/nlohmann/json.hpp"
+#include "../nlohmann/json.hpp"
 
 struct item_buy_requirements
 {

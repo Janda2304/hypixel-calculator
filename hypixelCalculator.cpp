@@ -1,7 +1,7 @@
 ﻿#include "farming.h"
-#include "helper.h"
+#include "helper.hpp"
 #include "mining.h"
-#include "minion_calculator.h"
+#include "minions/minion_calculator.h"
 
 
 int main()
@@ -43,7 +43,7 @@ int main()
             std::cin >> minion_id;
 
             helper::clear();
-            minion_calculator::calc_minion_profit(minion_calculator::minions[minion_id], profit, profit, fuel);
+            minion_calculator::calc_minion_profit(minion::minions[minion_id], profit, profit, fuel);
             helper::pause();
             break;
 

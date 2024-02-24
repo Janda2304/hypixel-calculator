@@ -2,7 +2,7 @@
 #include <iostream>
 #include <cstdlib>
 
-#include "helper.h"
+#include "helper.hpp"
 
 void mining::calculate_mgs()
 {

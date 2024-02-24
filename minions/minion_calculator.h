@@ -3,20 +3,15 @@
 #include <string>
 #include <map>
 
-#include "global_src/buy_requirements.h"
-#include "global_src/item.h"
-#include "global_src/minion_fuel.h"
-#include "global_src/crafting_recipe.h"
-#include "global_src/minion.h"
-
-#include "single_include/nlohmann/json.hpp"
+#include "../src/buy_requirements.h"
+#include "../src/minion_fuel.h"
+#include "../src/crafting_recipe.h"
+#include "../src/minion.h"
 
 
 class minion_calculator
 {
 public:
-    static std::unordered_map<std::string, item> items;
-    static std::map<std::string, minion> minions;
     static std::map<std::string, minion_fuel> minion_fuels;
     static std::map<std::string, crafting_recipe> recipes;
     static std::map<std::string, item_buy_requirements> buy_requirements;

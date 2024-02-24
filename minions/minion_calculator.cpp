@@ -5,16 +5,13 @@
 #include <queue>
 #include <sstream>
 
-#include "helper.h"
-#include "global_src/item.h"
-#include "global_src/drop_data.h"
-#include "global_src/minion_fuel.h"
-#include "global_src/crafting_recipe.h"
+#include "../helper.hpp"
+#include "../src/item.h"
+#include "../src/drop_data.h"
+#include "../src/minion_fuel.h"
+#include "../src/crafting_recipe.h"
 
 
-std::unordered_map<std::string, item> minion_calculator::items;
-
-std::map<std::string, minion> minion_calculator::minions;
 
 std::map<std::string, minion_fuel> minion_calculator::minion_fuels;
 
@@ -53,7 +50,7 @@ void minion_calculator::save_fuels(const std::string& path)
 void minion_calculator::save_items(const std::string& path)
 {
     nlohmann::json json_data;
-    for (const auto& item : items)
+    for (const auto& item : item::items)
     {
         json_data[item.first] = item.second.serialize();
     }
@@ -66,7 +63,7 @@ void minion_calculator::save_items(const std::string& path)
 void minion_calculator::save_minions(const std::string& path)
 {
     nlohmann::json json_data;
-    for (const auto& minion : minions)
+    for (const auto& minion : minion::minions)
     {
         json_data[minion.first] = minion.second.serialize();
     }
@@ -104,7 +101,7 @@ void minion_calculator::init_items(const std::string& path)
     for (const auto& item_data : json_data)
     {
         item itm = item::deserialize(item_data, bazaar_data);
-        items.insert({itm.id, itm});
+        item::items.insert({itm.id, itm});
     }
 }
 
@@ -117,7 +114,7 @@ void minion_calculator::init_minions(const std::string& path)
     for (auto minion_data : json_data)
     {
         minion minion = minion::deserialize(minion_data);
-        minions.insert({minion.id, minion});
+        minion::minions.insert({minion.id, minion});
     }
 }
 
@@ -202,7 +199,7 @@ void minion_calculator::calc_minion_profit(minion& minion, float& profit_out, fl
     drop_items.reserve(minion.drops.size());
     for (const auto& id : minion.drops)
     {
-        drop_items.push_back(minion_calculator::items[id.item_id]);
+        drop_items.push_back(item::items[id.item_id]);
     }
 
     if (manual_calculation)
@@ -223,7 +220,7 @@ void minion_calculator::calc_minion_profit(minion& minion, float& profit_out, fl
 
     if (diamond_spreading && minion.id.find("DIAMOND") == std::string::npos)
     {
-        drop_items.push_back(minion_calculator::items["DIAMOND"]);
+        drop_items.push_back(item::items["DIAMOND"]);
         drop_data diamond;
         diamond.item_id = "DIAMOND";
         diamond.drop_chance = 10;
@@ -268,18 +265,18 @@ void minion_calculator::calc_minion_profit(minion& minion, float& profit_out, fl
     }
     for (const auto& id : drops_per_hour)
     {
-        sum_profit += profits_per_hour[minion_calculator::items[id.first].id];
-        bazaar_sum_profit += bazaar_profit_per_hour[minion_calculator::items[id.first].id];
+        sum_profit += profits_per_hour[item::items[id.first].id];
+        bazaar_sum_profit += bazaar_profit_per_hour[item::items[id.first].id];
         drops_per_hour_sum += id.second;
 
         if (print_result)
         {
-            std::cout << items[id.first].name << ":\n";
+            std::cout << item::items[id.first].name << ":\n";
             std::cout << id.second << " per hour" << '\n';
 
-            std::cout << std::fixed << profits_per_hour[minion_calculator::items[id.first].id] << " coins per hour" <<
+            std::cout << std::fixed << profits_per_hour[item::items[id.first].id] << " coins per hour" <<
                 '\n';
-            std::cout << std::fixed << bazaar_profit_per_hour[minion_calculator::items[id.first].id] <<
+            std::cout << std::fixed << bazaar_profit_per_hour[item::items[id.first].id] <<
                 " coins per hour (bazaar)" << '\n' << '\n';
         }
     }
@@ -292,7 +289,7 @@ void minion_calculator::calc_minion_profit(minion& minion, float& profit_out, fl
         int needed_fuel = 86400.0f / static_cast<float>(fuel.fuel_time);
         std::cout << "Fuel will last " << fuel.fuel_time / 3600.0f << " hours" << '\n';
         std::cout << "You will need " << needed_fuel << " fuel per day" << '\n';
-        std::cout << "This fuel will cost approximately " << needed_fuel * items[fuel.id].bazaar_sell_price <<
+        std::cout << "This fuel will cost approximately " << needed_fuel * item::items[fuel.id].bazaar_sell_price <<
             " coins per day if bought at the bazaar" << '\n';
     }
     else
@@ -337,7 +334,7 @@ void minion_calculator::calc_minion_profit(minion& minion, float& profit_out, fl
     {
         float return_ratio = static_cast<float>(minion_recipe.item_amount) / base_item_drops;
         std::cout << "The minion returns the resource investment in " << return_ratio << " hours" << '\n';
-        float items_bazaar_price = items[minion_recipe.item_id].bazaar_sell_price * minion_recipe.item_amount;
+        float items_bazaar_price = item::items[minion_recipe.item_id].bazaar_sell_price * minion_recipe.item_amount;
         std::cout << "You can also buy the resources at the bazaar for " << items_bazaar_price << " coins" << '\n';
     }
     else
@@ -368,7 +365,7 @@ void minion_calculator::calc_minion_profit(minion& minion, float& profit_out, fl
         std::cout << base_item_needed_amount << "x " << enchanted_item_recipe.item_id << '\n';
         float return_ratio = static_cast<float>(base_item_needed_amount) / drops_per_hour[enchanted_item_recipe.item_id];
         std::cout << "The minion returns the resource investment for its tier in " << return_ratio << " hours (or " << return_ratio / 24 << " days)" << '\n';
-        float items_bazaar_price = items[enchanted_item_recipe.item_id].bazaar_sell_price * base_item_needed_amount;
+        float items_bazaar_price = item::items[enchanted_item_recipe.item_id].bazaar_sell_price * base_item_needed_amount;
         std::cout << "You can also buy the resources at the bazaar for " << items_bazaar_price << " coins" <<  '\n';
     }
 
@@ -425,7 +422,7 @@ void minion_calculator::calc_best_minion()
     production_rate_boost += static_cast<float>(boost);
 
 
-    for (auto minion_pair : minions)
+    for (auto minion_pair : minion::minions)
     {
         minion_pair.second.storage += storage_boost * 64;
         minion& out = minion_pair.second;

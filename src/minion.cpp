@@ -1,5 +1,10 @@
 ﻿#include "minion.h"
 
+#include <iostream>
+
+
+std::map<std::string, minion> minion::minions;
+
 nlohmann::json minion::serialize() const
 {
     nlohmann::json json_data;

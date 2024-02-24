@@ -1,24 +1,24 @@
 ﻿#include "farming.h"
 #include <iostream>
 
-#include "helper.h"
-#include "minion_calculator.h"
+#include "helper.hpp"
+#include "minions/minion_calculator.h"
 
 
 std::map<crop_type, crop>& farming::crop_map()
 {
     static std::map<crop_type, crop> _crop_map =
     {
-        {wheat, {wheat, minion_calculator::items["WHEAT"], 1}},
-        {carrot, {carrot, minion_calculator::items["CARROT"], 3.7f}},
-        {potato, {potato, minion_calculator::items["POTATO"], 3.7f}},
-        {nether_wart, {nether_wart, minion_calculator::items["NETHER_WART"], 1}},
-        {sugar_cane, {sugar_cane, minion_calculator::items["SUGAR_CANE"], 2}},
-        {melon, {melon, minion_calculator::items["MELON"], 5}},
-        {pumpkin, {pumpkin, minion_calculator::items["PUMPKIN"], 1}},
-        {cocoa_bean, {cocoa_bean, minion_calculator::items["COCOA_BEANS"], 3}},
-        {mushroom, {mushroom, minion_calculator::items["MUSHROOM"], 1}},
-        {cactus, {cactus, minion_calculator::items["CACTUS"], 2}}
+        {wheat, {wheat, item::items["WHEAT"], 1}},
+        {carrot, {carrot, item::items["CARROT"], 3.7f}},
+        {potato, {potato, item::items["POTATO"], 3.7f}},
+        {nether_wart, {nether_wart, item::items["NETHER_WART"], 1}},
+        {sugar_cane, {sugar_cane, item::items["SUGAR_CANE"], 2}},
+        {melon, {melon, item::items["MELON"], 5}},
+        {pumpkin, {pumpkin, item::items["PUMPKIN"], 1}},
+        {cocoa_bean, {cocoa_bean, item::items["COCOA_BEANS"], 3}},
+        {mushroom, {mushroom, item::items["MUSHROOM"], 1}},
+        {cactus, {cactus, item::items["CACTUS"], 2}}
     };
     return _crop_map;
 }

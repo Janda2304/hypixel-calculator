@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#include "../single_include/nlohmann/json.hpp"
+#include "../nlohmann/json.hpp"
 
 nlohmann::json crafting_recipe::serialize() const
 {

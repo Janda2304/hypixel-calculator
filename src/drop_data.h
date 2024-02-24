@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include <string>
-#include "../single_include/nlohmann/json.hpp"
+#include "../nlohmann/json.hpp"
 
 struct drop_data
 {

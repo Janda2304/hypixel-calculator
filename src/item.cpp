@@ -1,7 +1,9 @@
 ﻿#include "item.h"
 
-#include "../minion_calculator.h"
+#include "../minions/minion_calculator.h"
 
+
+std::unordered_map<std::string, item> item::items;
 
 nlohmann::json item::serialize() const
 {

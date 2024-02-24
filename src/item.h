@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include <string>
 #include <iostream>
-#include "../single_include/nlohmann/json.hpp"
+#include "../nlohmann/json.hpp"
 
 
 
@@ -19,4 +19,6 @@ struct item
     static item deserialize(const nlohmann::json& json_data, nlohmann::json& bazaar_data);
 
     void print_item_info() const;
+
+    static std::unordered_map<std::string, item> items;
 };
