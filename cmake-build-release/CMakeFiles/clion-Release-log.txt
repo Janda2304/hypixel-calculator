@@ -1,0 +1,4 @@
+"F:\Code\CLion Nova\CLion Nova\bin\cmake\win\x64\bin\cmake.exe" -DCMAKE_BUILD_TYPE=Release "-DCMAKE_MAKE_PROGRAM=F:/Code/CLion Nova/CLion Nova/bin/ninja/win/x64/ninja.exe" -G Ninja -S D:\code\c++\hypixel-calculator -B D:\code\c++\hypixel-calculator\cmake-build-release
+-- Configuring done (0.2s)
+-- Generating done (0.0s)
+-- Build files have been written to: D:/code/c++/hypixel-calculator/cmake-build-release

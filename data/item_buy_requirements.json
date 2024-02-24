@@ -1,0 +1,265 @@
+[
+  {
+    "offer_id": "BLAZE_GENERATOR_12",
+    "item_id": "ENCHANTED_BLAZE_ROD",
+    "item_amount": 16,
+    "coin_price": 2000000,
+    "other_cost": []
+  },
+  {
+    "offer_id": "CACTUS_GENERATOR_12",
+    "item_id": "ENCHANTED_CACTUS",
+    "item_amount": 32,
+    "coin_price": 0,
+    "other_cost": [
+      "SKYBLOCK_PELT:75"
+    ]
+  },
+  {
+    "offer_id": "CARROT_GENERATOR_12",
+    "item_id": "ENCHANTED_GOLDEN_CARROT",
+    "item_amount": 32,
+    "coin_price": 0,
+    "other_cost": [
+      "SKYBLOCK_PELT:75"
+    ]
+  },
+  {
+    "offer_id": "CHICKEN_GENERATOR_12",
+    "item_id": "ENCHANTED_RAW_CHICKEN",
+    "item_amount": 1024,
+    "coin_price": 0,
+    "other_cost": [
+      "SKYBLOCK_PELT:75"
+    ]
+  },
+  {
+    "offer_id": "COAL_GENERATOR_12",
+    "item_id": "ENCHANTED_COAL_BLOCK",
+    "item_amount": 16,
+    "coin_price": 2000000,
+    "other_cost": []
+  },
+  {
+    "offer_id": "COBBLESTONE_GENERATOR_12",
+    "item_id": "ENCHANTED_COBBLESTONE",
+    "item_amount": 1024,
+    "coin_price": 2000000,
+    "other_cost": []
+  },
+  {
+    "offer_id": "COCOA_GENERATOR_12",
+    "item_id": "ENCHANTED_COOKIE",
+    "item_amount": 16,
+    "coin_price": 0,
+    "other_cost": [
+      "SKYBLOCK_PELT:75"
+    ]
+  },
+  {
+    "offer_id": "COW_GENERATOR_12",
+    "item_id": "ENCHANTED_LEATHER",
+    "item_amount": 512,
+    "coin_price": 0,
+    "other_cost": [
+      "SKYBLOCK_PELT:75"
+    ]
+  },
+  {
+    "offer_id": "DIAMOND_GENERATOR_12",
+    "item_id": "ENCHANTED_DIAMOND_BLOCK",
+    "item_amount": 16,
+    "coin_price": 2000000,
+    "other_cost": []
+  },
+  {
+    "offer_id": "EMERALD_GENERATOR_12",
+    "item_id": "ENCHANTED_EMERALD_BLOCK",
+    "item_amount": 16,
+    "coin_price": 2000000,
+    "other_cost": []
+  },
+  {
+    "offer_id": "GHAST_GENERATOR_12",
+    "item_id": "SILVER_FANG",
+    "item_amount": 1024,
+    "coin_price": 2000000,
+    "other_cost": []
+  },
+  {
+    "offer_id": "GLOWSTONE_GENERATOR_12",
+    "item_id": "ENCHANTED_GLOWSTONE",
+    "item_amount": 32,
+    "coin_price": 2000000,
+    "other_cost": []
+  },
+  {
+    "offer_id": "GOLD_GENERATOR_12",
+    "item_id": "ENCHANTED_GOLD_BLOCK",
+    "item_amount": 16,
+    "coin_price": 2000000,
+    "other_cost": []
+  },
+  {
+    "offer_id": "HARD_STONE_GENERATOR_12",
+    "item_id": "CONCENTRATED_STONE",
+    "item_amount": 32,
+    "coin_price": 2000000,
+    "other_cost": []
+  },
+  {
+    "offer_id": "IRON_GENERATOR_12",
+    "item_id": "ENCHANTED_IRON_BLOCK",
+    "item_amount": 16,
+    "coin_price": 2000000,
+    "other_cost": []
+  },
+  {
+    "offer_id": "LAPIS_GENERATOR_12",
+    "item_id": "ENCHANTED_LAPIS_LAZULI_BLOCK",
+    "item_amount": 64,
+    "coin_price": 2000000,
+    "other_cost": []
+  },
+  {
+    "offer_id": "MAGMA_CUBE_GENERATOR_12",
+    "item_id": "ENCHANTED_MAGMA_CREAM",
+    "item_amount": 1024,
+    "coin_price": 2000000,
+    "other_cost": []
+  },
+  {
+    "offer_id": "MITHRIL_GENERATOR_12",
+    "item_id": "REFINED_MITHRIL",
+    "item_amount": 16,
+    "coin_price": 2000000,
+    "other_cost": []
+  },
+  {
+    "offer_id": "MUSHROOM_GENERATOR_12",
+    "item_id": "ENCHANTED_RED_MUSHROOM",
+    "item_amount": 512,
+    "coin_price": 0,
+    "other_cost": [
+      "SKYBLOCK_PELT:75"
+    ]
+  },
+  {
+    "offer_id": "MYCELIUM_GENERATOR_12",
+    "item_id": "ENCHANTED_MYCELIUM_CUBE",
+    "item_amount": 32,
+    "coin_price": 2000000,
+    "other_cost": [
+      "MAGE_REPUTATION:12000"
+    ]
+  },
+  {
+    "offer_id": "NETHER_WARTS_GENERATOR_12",
+    "item_id": "ENCHANTED_NETHER_STALK",
+    "item_amount": 1024,
+    "coin_price": 0,
+    "other_cost": [
+      "SKYBLOCK_PELT:75"
+    ]
+  },
+  {
+    "offer_id": "OBSIDIAN_GENERATOR_12",
+    "item_id": "ENCHANTED_OBSIDIAN",
+    "item_amount": 1024,
+    "coin_price": 2000000,
+    "other_cost": []
+  },
+  {
+    "offer_id": "PIG_GENERATOR_12",
+    "item_id": "ENCHANTED_GRILLED_PORK",
+    "item_amount": 16,
+    "coin_price": 0,
+    "other_cost": [
+      "SKYBLOCK_PELT:75"
+    ]
+  },
+  {
+    "offer_id": "POTATO_GENERATOR_12",
+    "item_id": "ENCHANTED_BAKED_POTATO",
+    "item_amount": 32,
+    "coin_price": 0,
+    "other_cost": [
+      "SKYBLOCK_PELT:75"
+    ]
+  },
+  {
+    "offer_id": "QUARTZ_GENERATOR_12",
+    "item_id": "ENCHANTED_QUARTZ_BLOCK",
+    "item_amount": 16,
+    "coin_price": 2000000,
+    "other_cost": []
+  },
+  {
+    "offer_id": "RABBIT_GENERATOR_12",
+    "item_id": "ENCHANTED_RABBIT_HIDE",
+    "item_amount": 1024,
+    "coin_price": 0,
+    "other_cost": [
+      "SKYBLOCK_PELT:75"
+    ]
+  },
+  {
+    "offer_id": "REDSTONE_GENERATOR_12",
+    "item_id": "ENCHANTED_REDSTONE_BLOCK",
+    "item_amount": 32,
+    "coin_price": 2000000,
+    "other_cost": []
+  },
+  {
+    "offer_id": "RED_SAND_GENERATOR_12",
+    "item_id": "ENCHANTED_RED_SAND_CUBE",
+    "item_amount": 32,
+    "coin_price": 2000000,
+    "other_cost": [
+      "BARBARIAN_REPUTATION:12000"
+    ]
+  },
+  {
+    "offer_id": "REVENANT_GENERATOR_12",
+    "item_id": "REVENANT_VISCERA",
+    "item_amount": 64,
+    "coin_price": 2000000,
+    "other_cost": []
+  },
+  {
+    "offer_id": "SHEEP_GENERATOR_12",
+    "item_id": "ENCHANTED_COOKED_MUTTON",
+    "item_amount": 16,
+    "coin_price": 0,
+    "other_cost": [
+      "SKYBLOCK_PELT:75"
+    ]
+  },
+  {
+    "offer_id": "SNOW_GENERATOR_12",
+    "item_id": "ENCHANTED_SNOW_BLOCK",
+    "item_amount": 1024,
+    "coin_price": 2000000,
+    "other_cost": [
+      "SKYBLOCK_NORTH_STAR:500"
+    ]
+  },
+  {
+    "offer_id": "SUGAR_CANE_GENERATOR_12",
+    "item_id": "ENCHANTED_SUGAR_CANE",
+    "item_amount": 32,
+    "coin_price": 0,
+    "other_cost": [
+      "SKYBLOCK_PELT:75"
+    ]
+  },
+  {
+    "offer_id": "WHEAT_GENERATOR_12",
+    "item_id": "ENCHANTED_HAY_BLOCK",
+    "item_amount": 64,
+    "coin_price": 0,
+    "other_cost": [
+      "SKYBLOCK_PELT:75"
+    ]
+  }
+]

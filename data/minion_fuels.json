@@ -1,0 +1,114 @@
+[
+  {
+    "effectivity_percentage": 5,
+    "fuel_time": 1800,
+    "multiplier": 0,
+    "name": "Coal",
+    "id": "COAL"
+  },
+  {
+    "effectivity_percentage": 5,
+    "fuel_time": 18000,
+    "multiplier": 0,
+    "name": "Block of Coal",
+    "id": "COAL_BLOCK"
+  },
+  {
+    "effectivity_percentage": 5,
+    "fuel_time": 43200,
+    "multiplier": 0,
+    "name": "Enchanted Bread",
+    "id": "ENCHANTED_BREAD"
+  },
+  {
+    "effectivity_percentage": 10,
+    "fuel_time": 86400,
+    "multiplier": 0,
+    "name": "Enchanted Coal",
+    "id": "ENCHANTED_COAL"
+  },
+  {
+    "effectivity_percentage": 20,
+    "fuel_time": 129600,
+    "multiplier": 0,
+    "name": "Enchanted Charcoal",
+    "id": "ENCHANTED_CHARCOAL"
+  },
+  {
+    "effectivity_percentage": 25,
+    "fuel_time": -1,
+    "multiplier": 0,
+    "name": "Solar Panel",
+    "id": "SOLAR_PANEL"
+  },
+  {
+    "effectivity_percentage": 25,
+    "fuel_time": -1,
+    "multiplier": 0,
+    "name": "Enchanted Lava Bucket",
+    "id": "ENCHANTED_LAVA_BUCKET"
+  },
+  {
+    "effectivity_percentage": 30,
+    "fuel_time": -1,
+    "multiplier": 0,
+    "name": "Magma Bucket",
+    "id": "MAGMA_BUCKET"
+  },
+  {
+    "effectivity_percentage": 35,
+    "fuel_time": -1,
+    "multiplier": 0,
+    "name": "Plasma Bucket",
+    "id": "PLASMA_BUCKET"
+  },
+  {
+    "effectivity_percentage": 40,
+    "fuel_time": -1,
+    "multiplier": 0,
+    "name": "Everburning Flame",
+    "id": "EVERBURNING_FLAME"
+  },
+  {
+    "effectivity_percentage": 50,
+    "fuel_time": 86400,
+    "multiplier": 0,
+    "name": "Hamster Wheel",
+    "id": "HAMSTER_WHEEL"
+  },
+  {
+    "effectivity_percentage": 90,
+    "fuel_time": 18000,
+    "multiplier": 0,
+    "name": "Foul Flesh",
+    "id": "FOUL_FLESH"
+  },
+  {
+    "effectivity_percentage": 0,
+    "fuel_time": 3600,
+    "multiplier": 2,
+    "name": "Tasty Cheese",
+    "id": "TASTY_CHEESE"
+  },
+  {
+    "effectivity_percentage": 0,
+    "fuel_time": 10800,
+    "multiplier": 3,
+    "name": "Catalyst",
+    "id": "CATALYST"
+  },
+  {
+    "effectivity_percentage": 0,
+    "fuel_time": 21600,
+    "multiplier": 4,
+    "name": "Hyper Catalyst",
+    "id": "HYPER_CATALYST"
+  },
+  {
+    "effectivity_percentage": 0,
+    "fuel_time": 0,
+    "multiplier": 0,
+    "name": "none",
+    "id": "NONE"
+  }
+]

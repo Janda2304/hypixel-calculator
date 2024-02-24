@@ -1,0 +1,12 @@
+# ninja log v5
+9351	9517	7305018494032496	hypixel_calculator.exe	10cb1b3b4073e920
+22	4726	7305018446170966	CMakeFiles/hypixel_calculator.dir/hypixelCalculator.cpp.obj	ef8d1669ebe42f33
+20	5097	7305018449875561	CMakeFiles/hypixel_calculator.dir/farming.cpp.obj	591b8f1dc843ac6c
+8	3347	7305018432359643	CMakeFiles/hypixel_calculator.dir/global_src/crafting_recipe.cpp.obj	9a4b3342cadf69c1
+4	3733	7305018436230959	CMakeFiles/hypixel_calculator.dir/global_src/buy_requirements.cpp.obj	9fab2e81535ce9db
+11	3306	7305018431931950	CMakeFiles/hypixel_calculator.dir/global_src/drop_data.cpp.obj	882c769d70de040b
+17	3469	7305018433586337	CMakeFiles/hypixel_calculator.dir/global_src/minion_fuel.cpp.obj	7be136cd42e25d63
+15	3739	7305018436300760	CMakeFiles/hypixel_calculator.dir/global_src/minion.cpp.obj	dc6f96c1a2b6eff8
+13	3654	7305018435431357	CMakeFiles/hypixel_calculator.dir/global_src/item.cpp.obj	64a56fa4826cd6df
+28	9351	7305018492370468	CMakeFiles/hypixel_calculator.dir/minion_calculator.cpp.obj	55a6e8e39b65cd18
+24	3135	7305018430206558	CMakeFiles/hypixel_calculator.dir/mining.cpp.obj	bdcdc0fe813b42ad
