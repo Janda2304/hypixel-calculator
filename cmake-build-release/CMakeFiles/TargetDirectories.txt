@@ -1,3 +1,0 @@
-D:/code/c++/hypixel-calculator/cmake-build-release/CMakeFiles/hypixel_calculator.dir
-D:/code/c++/hypixel-calculator/cmake-build-release/CMakeFiles/edit_cache.dir
-D:/code/c++/hypixel-calculator/cmake-build-release/CMakeFiles/rebuild_cache.dir
