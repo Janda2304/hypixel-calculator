@@ -35,3 +35,6 @@
 *.idea
 x64/
 .vs/
+cmake-build-debug/
+cmake-build-release/
+
