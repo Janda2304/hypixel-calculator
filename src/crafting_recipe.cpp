@@ -4,6 +4,9 @@
 
 #include "../nlohmann/json.hpp"
 
+
+std::map<std::string, crafting_recipe> crafting_recipe::recipes;
+
 nlohmann::json crafting_recipe::serialize() const
 {
     nlohmann::json json_data;

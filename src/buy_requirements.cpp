@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+std::map<std::string, item_buy_requirements> item_buy_requirements::buy_requirements;
+
 void item_buy_requirements::print_buy_requirements() const
 {
     std::cout << "Offer ID: " << offer_id << '\n';

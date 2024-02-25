@@ -51,3 +51,11 @@ void minion::print_minion_info() const
         std::cout << "drop chance: " << drop.drop_chance << '\n';
     }
 }
+
+void minion::add_drop(const drop_data &drop)
+{
+    if (std::find(drops.begin(), drops.end(), drop) == drops.end())
+    {
+        drops.push_back(drop);
+    }
+}

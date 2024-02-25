@@ -20,5 +20,5 @@ struct item_buy_requirements
 
     static item_buy_requirements deserialize(const nlohmann::json& json_data);
 
-
+    static std::map<std::string, item_buy_requirements> buy_requirements;
 };

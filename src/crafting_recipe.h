@@ -15,4 +15,6 @@ struct crafting_recipe
     void print_recipe() const;
 
     void print_recipe_short() const;
+
+    static std::map<std::string, crafting_recipe> recipes;
 };

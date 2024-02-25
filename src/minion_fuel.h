@@ -23,4 +23,6 @@ struct minion_fuel
     static minion_fuel deserialize(const nlohmann::json& json_data);
 
     void print_fuel_info() const;
+
+    static std::map<std::string, minion_fuel> minion_fuels;
 };

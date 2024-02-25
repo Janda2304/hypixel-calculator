@@ -11,4 +11,9 @@ struct drop_data
     nlohmann::json serialize() const;
 
     static drop_data deserialize(const nlohmann::json& json_data);
+
+    bool operator==(const drop_data& rhs) const
+    {
+        return item_id == rhs.item_id && drop_rate == rhs.drop_rate && drop_chance == rhs.drop_chance;
+    }
 };

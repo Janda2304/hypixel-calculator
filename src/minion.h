@@ -43,4 +43,7 @@ struct minion
     void print_minion_info() const;
 
     static std::map<std::string, minion> minions;
+
+    void add_drop(const drop_data& drop);
+    
 };

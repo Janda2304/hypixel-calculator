@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+std::map<std::string, minion_fuel> minion_fuel::minion_fuels;
+
 nlohmann::json minion_fuel::serialize() const
 {
     nlohmann::json json_data;

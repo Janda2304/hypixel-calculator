@@ -6,12 +6,12 @@
 
 int main()
 {
-    minion_calculator::init_fuels("data/minion_fuels.json");
-    minion_calculator::init_minions("data/minions.json");
-    minion_calculator::init_items("data/items.json");
-    minion_calculator::init_recipes("data/item_recipes.json");
-    minion_calculator::init_recipes("data/minion_recipes.json");
-    minion_calculator::init_buy_requirements("data/item_buy_requirements.json");
+    minion_calculator::init_fuels("../data/minion_fuels.json");
+    minion_calculator::init_minions("../data/minions.json");
+    minion_calculator::init_items("../data/items.json");
+    minion_calculator::init_recipes("../data/item_recipes.json");
+    minion_calculator::init_recipes("../data/minion_recipes.json");
+    minion_calculator::init_buy_requirements("../data/item_buy_requirements.json");
 
     
     helper::pause();
