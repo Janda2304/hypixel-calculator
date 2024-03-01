@@ -202,7 +202,13 @@ void minion_calculator::calc_minion_profit(minion &minion, float &profit_out, fl
     float production_rate_boost = 0;
     float multiplier = 1;
     int storage_boost = 0;
+    std::unordered_map<std::string, drop_data> minion_drops;
     std::cout << std::setprecision(3);
+
+    for (const auto& minion_drop: minion.drops)
+    {
+        minion_drops.insert({minion_drop.item_id, minion_drop});
+    }
 
     if (manual_calculation)
     {
@@ -220,6 +226,7 @@ void minion_calculator::calc_minion_profit(minion &minion, float &profit_out, fl
 
     if (diamond_spreading && minion.id.find("DIAMOND") == std::string::npos)
     {
+        //TODO: rewrite this, diamond spreading works differently (it gives a diamond every 10th item drop not minion action)
         drop_data diamond;
         diamond.item_id = "DIAMOND";
         diamond.drop_chance = 10;
@@ -227,7 +234,8 @@ void minion_calculator::calc_minion_profit(minion &minion, float &profit_out, fl
         diamond.xp_drop.skill = skills::mining;
         diamond.xp_drop.xp = 0.4f;
         minion.add_drop(diamond);
-    } else if (diamond_spreading && minion.id.find("DIAMOND") != std::string::npos)
+    }
+    else if (diamond_spreading && minion.id.find("DIAMOND") != std::string::npos)
     {
         //if the minion is a diamond minion and diamond spreading is used, the production rate is increased by 10%
         production_rate_boost += 10;
@@ -243,23 +251,29 @@ void minion_calculator::calc_minion_profit(minion &minion, float &profit_out, fl
     std::map<std::string, float> bazaar_profit_per_hour;
     float sum_profit = 0;
     float bazaar_sum_profit = 0;
-    int index = 0;
 
     if (minion.id.find("FISHING") != std::string::npos)
     {
         production_rate_multiplier = 1;
     }
 
-    for (const auto &minion_drop: minion.drops)
+    for (const auto &drop: minion_drops)
     {
-        item item = item::items[minion_drop.item_id];
+        item item = item::items[drop.second.item_id];
+        
         production_rate = minion.base_production_rate / (1 + production_rate_boost * 0.01);
-        actions_per_hour = 3600 / (production_rate * production_rate_multiplier);
-        drops_per_action = minion.drops[index].drop_rate * (minion.drops[index].drop_chance * 0.01f);
-        drops_per_hour.insert({item.id, actions_per_hour * drops_per_action * multiplier});
+        
+        actions_per_hour = 3600 / (production_rate * production_rate_multiplier); 
+
+        //how much of this item drops per one action
+        drops_per_action = drop.second.drop_rate * (drop.second.drop_chance * 0.01f); 
+
+        //how much of this item is generated per hour
+        drops_per_hour.insert({item.id, actions_per_hour * drops_per_action * multiplier}); 
+        
         profits_per_hour.insert({item.id, drops_per_hour[item.id] * item.sell_price});
+        
         bazaar_profit_per_hour.insert({item.id, drops_per_hour[item.id] * item.bazaar_sell_price});
-        index++;
     }
 
 
@@ -274,20 +288,25 @@ void minion_calculator::calc_minion_profit(minion &minion, float &profit_out, fl
     int drop_index = 0;
     for (const auto &id: drops_per_hour)
     {
-        sum_profit += profits_per_hour[item::items[id.first].id];
-        bazaar_sum_profit += bazaar_profit_per_hour[item::items[id.first].id];
+        drop_data drop = minion_drops[id.first];
+        item item = item::items[id.first];
+
+        float profit = profits_per_hour[item.id];
+        float bazaar_profit = bazaar_profit_per_hour[item.id];
+        
+        sum_profit += profit;
+        bazaar_sum_profit += bazaar_profit;
         drops_per_hour_sum += id.second;
 
         if (print_result)
         {
-            std::cout << item::items[id.first].name << ":\n";
+            std::cout << item.name << ":\n";
             std::cout << id.second << " per hour" << '\n';
 
             std::cout << std::fixed;
-            std::cout << profits_per_hour[item::items[id.first].id] << " coins per hour" << '\n';
-            std::cout << bazaar_profit_per_hour[item::items[id.first].id] << " coins per hour (bazaar)" << '\n';
-            std::cout << "You will get " << drops_per_hour[minion.drops[drop_index].item_id] * minion.drops[drop_index].xp_drop.xp << ' ' << to_string(minion.
-               drops[drop_index].xp_drop.skill) << " xp per hour" << '\n' << '\n';
+            std::cout << profit << " coins per hour" << '\n';
+            std::cout << bazaar_profit << " coins per hour (bazaar)" << '\n';
+            std::cout << to_string(drop.xp_drop.skill) << " xp: " << drops_per_hour[drop.item_id] * drop.xp_drop.xp << " per hour" << '\n' << '\n';
             drop_index++;
         }
     }
@@ -311,8 +330,9 @@ void minion_calculator::calc_minion_profit(minion &minion, float &profit_out, fl
     std::cout << "Total profit per hour: " << sum_profit << '\n';
     std::cout << "Total profit per day: " << sum_profit * 24 << '\n' << '\n';
 
-    std::cout << std::fixed << "Total profit per hour (bazaar): " << bazaar_sum_profit << '\n';
-    std::cout << std::fixed << "Total profit per day (bazaar): " << bazaar_sum_profit * 24 << '\n' << '\n';
+    std::cout << std::fixed;
+    std::cout << "Total profit per hour (bazaar): " << bazaar_sum_profit << '\n';
+    std::cout << "Total profit per day (bazaar): " << bazaar_sum_profit * 24 << '\n' << '\n';
 
     std::cout << "Minion crafting recipe: " << '\n';
 
