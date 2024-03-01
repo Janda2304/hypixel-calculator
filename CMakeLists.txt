@@ -25,7 +25,10 @@ add_executable(hypixel_calculator
         mining.cpp
         mining.h
         minions/minion_calculator.cpp
-        minions/minion_calculator.h)
+        minions/minion_calculator.h
+        src/item_xp_drop.cpp
+        src/item_xp_drop.h
+)
 
 
 

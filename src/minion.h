@@ -5,15 +5,15 @@
 
 enum minion_type
 {
-    mining,
-    farming,
-    foraging,
-    fishing,
-    combat,
-    alchemy,
-    enchanting,
-    other,
-    slayer
+    mining_minion,
+    farming_minion,
+    foraging_minion,
+    fishing_minion,
+    combat_minion,
+    alchemy_minion,
+    enchanting_minion,
+    other_minion,
+    slayer_minion
 };
 
 /**
@@ -45,5 +45,4 @@ struct minion
     static std::map<std::string, minion> minions;
 
     void add_drop(const drop_data& drop);
-    
 };

@@ -1,5 +1,7 @@
 ﻿#pragma once
 #include <string>
+
+#include "item_xp_drop.h"
 #include "../nlohmann/json.hpp"
 
 struct drop_data
@@ -7,6 +9,7 @@ struct drop_data
     std::string item_id;
     float drop_rate;
     float drop_chance;
+    item_xp_drop xp_drop;
 
     nlohmann::json serialize() const;
 
