@@ -15,16 +15,10 @@ add_executable(hypixel_calculator
         mining.cpp
         minions/minion_calculator.cpp
         src/item_xp_drop.cpp
-        imgui/imgui_impl_glfw.cpp
-        imgui/imgui_impl_opengl3.cpp
 )
 
 
 
 
-find_package(imgui CONFIG REQUIRED)
-target_link_libraries(hypixel_calculator PRIVATE imgui::imgui)
-find_package(glfw3 CONFIG REQUIRED)
-target_link_libraries(hypixel_calculator PRIVATE glfw)
 
 
