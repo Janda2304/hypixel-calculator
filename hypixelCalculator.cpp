@@ -11,7 +11,7 @@
 bool show_mgs = false;
 char input[256];
 std::string input_string;
-
+ImFont* font;
 void ImGuiInit(GLFWwindow* window)
 {
     IMGUI_CHECKVERSION();
@@ -19,8 +19,22 @@ void ImGuiInit(GLFWwindow* window)
     ImGuiIO& io = ImGui::GetIO(); (void)io;
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init("#version 130");
-    io.Fonts->AddFontFromFileTTF("fonts/Roboto-Regular.ttf", 18.0f);
+    font = io.Fonts->AddFontFromFileTTF("../fonts/Roboto-Regular.ttf", 18.0f);
+
     ImGui::StyleColorsDark();
+}
+
+void ImGuiShutdown()
+{
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
+    // Cleanup
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
+    ImGui::PopFont();
+  
 }
 
 // Main rendering loop
@@ -54,36 +68,60 @@ void renderLoop(GLFWwindow* window)
      
        
         
-        // Add your GUI elements here
-        if (ImGui::Button("Calculate MGS (Mining Gear Score)", ImVec2(400, 50)) && !show_mgs)
+        if (!show_mgs)
         {
-            show_mgs = !show_mgs;
-            //mining::calculate_mgs();
-            std::cout << input << std::endl;
-        }
-       
-        if(ImGui::Button("Calculate Farming Profits", ImVec2(400, 50)))
-        {
-            
-        }
-        
-        if(ImGui::Button("Calculate Minion Profit", ImVec2(400, 50)))
-        {
-            
-        }
-            
-        if (ImGui::Button("Calculate Best Minion", ImVec2(400, 50)))
-        {
-            
+            if (ImGui::Button("Calculate MGS (Mining Gear Score)", ImVec2(400, 50)))
+            {
+                show_mgs = true;
+            }
+
+            if (ImGui::Button("Calculate Farming Profits", ImVec2(400, 50)))
+            {
+
+            }
+
+            if (ImGui::Button("Calculate Minion Profit", ImVec2(400, 50)))
+            {
+
+            }
+
+            if (ImGui::Button("Calculate Best Minion", ImVec2(400, 50)))
+            {
+
+            }
         }
 
         if (show_mgs)
         {
-            ImGui::InputInt("Mining Speed", &mining::mining_speed);
-            ImGui::Text(input);
+            float final_profit;
+            float mgs;
+            
+            ImGui::InputInt("Mining Speed", &mining::mining_speed, 0, 0, ImGuiInputTextFlags_CharsDecimal);
+            ImGui::Text("Mining Speed: %d", mining::mining_speed);
+            ImGui::Dummy(ImVec2(0, 5));
+            
+            ImGui::InputInt("Mining Fortune", &mining::mining_fortune, 0, 0, ImGuiInputTextFlags_CharsDecimal);
+            ImGui::Text("Mining Fortune: %d", mining::mining_fortune);
+            ImGui::Dummy(ImVec2(0, 5));
+            
+            ImGui::InputFloat("Pristine", &mining::pristine, 0.0f, 0.0f, "%.3f", ImGuiInputTextFlags_CharsDecimal);
+            ImGui::Text("Pristine: %f", mining::pristine);
+            
+            ImGui::Dummy(ImVec2(0, 10)); //add vertical spacing
+
+            mining::calculate_mgs(mining::mining_speed, mining::mining_fortune, mining::pristine, final_profit, mgs);
+
+            ImGui::Text("Your Mining Gear Score (MGS) is: %f", mgs);
+            ImGui::Text("You will make approximately %f coins a hour", final_profit);
+
+            if (ImGui::Button("Back to main menu", ImVec2(400, 50)))
+            {
+                show_mgs = false;
+            }
         }
 
         ImGui::End();
+    
 
         // Rendering
         glClear(GL_COLOR_BUFFER_BIT);
@@ -91,6 +129,9 @@ void renderLoop(GLFWwindow* window)
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         glfwSwapBuffers(window);
     }
+    ImGuiShutdown();
+    glfwDestroyWindow(window);
+    glfwTerminate();
 }
 
 int main()
@@ -158,10 +199,4 @@ int main()
         default: return 0;
         }
     }
-    // Cleanup
-    ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();
-    glfwDestroyWindow(window);
-    glfwTerminate();
 }
