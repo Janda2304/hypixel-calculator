@@ -1,11 +1,18 @@
-﻿#include "farming.h"
+﻿#include <GLFW/glfw3.h>
+
+#include "farming.h"
 #include "helper.hpp"
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
 #include "mining.h"
 #include "minions/minion_calculator.h"
 
 
 int main()
 {
+    
     minion_calculator::init_fuels("../data/minion_fuels.json");
     minion_calculator::init_minions("../data/minions.json");
     minion_calculator::init_items("../data/items.json");
