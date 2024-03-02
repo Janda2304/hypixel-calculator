@@ -10,9 +10,10 @@ void mining::calculate_mgs()
     int mining_fortune;
     float pristine;
 
+
     
     
-    system("cls");
+    std::cout << std::fixed;
     std::cout << "Enter your mining speed:\n";
     std::cin >> mining_speed;
     

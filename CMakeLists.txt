@@ -27,4 +27,7 @@ target_link_libraries(hypixel_calculator PRIVATE imgui::imgui)
 find_package(glfw3 CONFIG REQUIRED)
 target_link_libraries(hypixel_calculator PRIVATE glfw)
 
+find_package(OpenGL REQUIRED)
+target_link_libraries(hypixel_calculator PRIVATE OpenGL::GL)
+
 
