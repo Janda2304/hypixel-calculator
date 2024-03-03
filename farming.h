@@ -6,7 +6,7 @@
 
 enum crop_type
 {
-    wheat = 1,
+    wheat,
     carrot,
     potato,
     nether_wart,
@@ -17,6 +17,24 @@ enum crop_type
     mushroom,
     cactus
 };
+
+const inline char *to_string(const crop_type e)
+{
+    switch (e)
+    {
+        case wheat: return "wheat";
+        case carrot: return "carrot";
+        case potato: return "potato";
+        case nether_wart: return "nether wart";
+        case sugar_cane: return "sugar cane";
+        case melon: return "melon";
+        case pumpkin: return "pumpkin";
+        case cocoa_bean: return "cocoa bean";
+        case mushroom: return "mushroom";
+        case cactus: return "cactus";
+        default: return "unknown";
+    }
+}
 
 struct crop
 {
@@ -30,9 +48,9 @@ class farming
 {
    
 public:
-    static void calculate_crop_profit(crop_type type);
+    static void calculate_crop_profit(crop_type type, float &final_profit, float &final_profit_bazaar, int &final_drop, crop_type& type_out);
 
-    static void calculate_farming_profit();
+    static void calculate_farming_profit(int farming_fortune, crop_type type, float &final_profit, float &final_profit_bazaar, int &final_drop);
     
     static std::map<crop_type, crop>& crop_map();
     

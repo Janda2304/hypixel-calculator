@@ -9,9 +9,8 @@
 #include "minions/minion_calculator.h"
 
 bool show_mgs = false;
-char input[256];
-std::string input_string;
-ImFont* font;
+bool show_farming = false;
+
 void ImGuiInit(GLFWwindow* window)
 {
     IMGUI_CHECKVERSION();
@@ -19,7 +18,7 @@ void ImGuiInit(GLFWwindow* window)
     ImGuiIO& io = ImGui::GetIO(); (void)io;
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init("#version 130");
-    font = io.Fonts->AddFontFromFileTTF("../fonts/Roboto-Regular.ttf", 18.0f);
+    io.Fonts->AddFontFromFileTTF("../fonts/Roboto-Regular.ttf", 18.0f);
 
     ImGui::StyleColorsDark();
 }
@@ -68,7 +67,7 @@ void renderLoop(GLFWwindow* window)
      
        
         
-        if (!show_mgs)
+        if (!show_mgs && !show_farming)
         {
             if (ImGui::Button("Calculate MGS (Mining Gear Score)", ImVec2(400, 50)))
             {
@@ -77,7 +76,7 @@ void renderLoop(GLFWwindow* window)
 
             if (ImGui::Button("Calculate Farming Profits", ImVec2(400, 50)))
             {
-
+                show_farming = true;
             }
 
             if (ImGui::Button("Calculate Minion Profit", ImVec2(400, 50)))
@@ -95,7 +94,7 @@ void renderLoop(GLFWwindow* window)
         {
             float final_profit;
             float mgs;
-            
+            ImGui::PushItemWidth(200);
             ImGui::InputInt("Mining Speed", &mining::mining_speed, 0, 0, ImGuiInputTextFlags_CharsDecimal);
             ImGui::Text("Mining Speed: %d", mining::mining_speed);
             ImGui::Dummy(ImVec2(0, 5));
@@ -117,6 +116,45 @@ void renderLoop(GLFWwindow* window)
             if (ImGui::Button("Back to main menu", ImVec2(400, 50)))
             {
                 show_mgs = false;
+            }
+        }
+
+        if (show_farming)
+        {
+            float final_profit;
+            float final_profit_bazaar;
+            int final_drop;
+            crop_type type_display;
+            
+            ImGui::PushItemWidth(200);
+            ImGui::InputInt("Farming Fortune", &farming::farming_fortune, 0, 0, ImGuiInputTextFlags_CharsDecimal);
+            ImGui::Text("Farming Fortune: %d", farming::farming_fortune);
+            ImGui::Dummy(ImVec2(0, 5));
+
+            ImGui::InputInt("Crop Break Speed (per second, max 20)", &farming::crop_break_speed, 0, 0, ImGuiInputTextFlags_CharsDecimal);
+            ImGui::Text("Crop Break Speed: %d", farming::crop_break_speed);
+            ImGui::Dummy(ImVec2(0, 5));
+            
+            for (int i = 0; i < 10; ++i)
+            {
+                crop_type type = static_cast<crop_type>(i);
+                if (ImGui::Button(to_string(type), ImVec2(100, 30)))
+                {
+                    farming::calculate_crop_profit(type, final_profit, final_profit_bazaar, final_drop, type_display);
+                }
+            }
+            ImGui::Dummy(ImVec2(0, 10)); //add vertical spacing
+            
+            ImGui::Text("Current Crop: %s", to_string(type_display));
+            ImGui::Dummy(ImVec2(0, 5));
+            
+            ImGui::Text("Profit Per Hour: %f", final_profit);
+            ImGui::Text("Profit Per Hour (Bazaar): %f", final_profit_bazaar);
+            ImGui::Text("Crops Farmed Per Hour: %d", final_drop);
+            
+            if (ImGui::Button("Back to main menu", ImVec2(400, 50)))
+            {
+                show_farming = false;
             }
         }
 
@@ -178,7 +216,7 @@ int main()
         case 1: 
             break;
 
-        case 2: farming::calculate_farming_profit();
+        case 2: 
             break;
 
         case 3:
