@@ -9,7 +9,10 @@
 class minion_calculator
 {
 public:
-  
+
+    static bool diamond_spreading;
+    static std::string selected_minion_id;
+    static int selected_minion_id_index;
 
     /**
      * \brief used to replace weird ids with the correct ones (e.g. "SLIME_BALL" to "SLIMEBALL") <br> the ids are replaced because no one can tell that e.g. LOG_2:1 is a birch log or something
@@ -35,6 +38,8 @@ public:
     static void calc_minion_profit(minion &minion, float &profit_out, float &bazaar_profit_out, minion_fuel &fuel,
                                    bool diamond_spreading = false, bool manual_calculation = true,
                                    bool print_result = true);
+
+    static void show_minion_profit_menu(bool &show_minion_profit);
 
     static void calc_best_minion();
 };

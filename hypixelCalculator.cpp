@@ -10,6 +10,7 @@
 
 bool show_mgs = false;
 bool show_farming = false;
+bool show_minion_profit = false;
 
 void ImGuiInit(GLFWwindow* window)
 {
@@ -67,7 +68,7 @@ void renderLoop(GLFWwindow* window)
      
        
         
-        if (!show_mgs && !show_farming)
+        if (!show_mgs && !show_farming && !show_minion_profit)
         {
             if (ImGui::Button("Calculate MGS (Mining Gear Score)", ImVec2(400, 50)))
             {
@@ -81,82 +82,75 @@ void renderLoop(GLFWwindow* window)
 
             if (ImGui::Button("Calculate Minion Profit", ImVec2(400, 50)))
             {
-
+                show_minion_profit = true;
             }
 
             if (ImGui::Button("Calculate Best Minion", ImVec2(400, 50)))
             {
-
+                
             }
         }
 
-        if (show_mgs)
+        mining::show_mgs_menu(show_mgs);
+        farming::show_farming_menu(show_farming);
+
+        if (show_minion_profit)
         {
-            float final_profit;
-            float mgs;
-            ImGui::PushItemWidth(200);
-            ImGui::InputInt("Mining Speed", &mining::mining_speed, 0, 0, ImGuiInputTextFlags_CharsDecimal);
-            ImGui::Text("Mining Speed: %d", mining::mining_speed);
-            ImGui::Dummy(ImVec2(0, 5));
-            
-            ImGui::InputInt("Mining Fortune", &mining::mining_fortune, 0, 0, ImGuiInputTextFlags_CharsDecimal);
-            ImGui::Text("Mining Fortune: %d", mining::mining_fortune);
-            ImGui::Dummy(ImVec2(0, 5));
-            
-            ImGui::InputFloat("Pristine", &mining::pristine, 0.0f, 0.0f, "%.3f", ImGuiInputTextFlags_CharsDecimal);
-            ImGui::Text("Pristine: %f", mining::pristine);
-            
-            ImGui::Dummy(ImVec2(0, 10)); //add vertical spacing
+            std::string current_minion_id;
+            std::vector<const char*> minion_names;
 
-            mining::calculate_mgs(mining::mining_speed, mining::mining_fortune, mining::pristine, final_profit, mgs);
-
-            ImGui::Text("Your Mining Gear Score (MGS) is: %f", mgs);
-            ImGui::Text("You will make approximately %f coins a hour", final_profit);
-
-            if (ImGui::Button("Back to main menu", ImVec2(400, 50)))
+            // Populate the vector of minion names
+            for (const auto& minion : minion::minions)
             {
-                show_mgs = false;
+                minion_names.push_back(minion.second.name.c_str());
             }
-        }
 
-        if (show_farming)
-        {
-            float final_profit;
-            float final_profit_bazaar;
-            int final_drop;
-            crop_type type_display;
-            
-            ImGui::PushItemWidth(200);
-            ImGui::InputInt("Farming Fortune", &farming::farming_fortune, 0, 0, ImGuiInputTextFlags_CharsDecimal);
-            ImGui::Text("Farming Fortune: %d", farming::farming_fortune);
-            ImGui::Dummy(ImVec2(0, 5));
+            static char filter_buffer[256] = "";
 
-            ImGui::InputInt("Crop Break Speed (per second, max 20)", &farming::crop_break_speed, 0, 0, ImGuiInputTextFlags_CharsDecimal);
-            ImGui::Text("Crop Break Speed: %d", farming::crop_break_speed);
-            ImGui::Dummy(ImVec2(0, 5));
-            
-            for (int i = 0; i < 10; ++i)
+            // Search bar
+            ImGui::PushItemWidth(300);
+            ImGui::InputText("Search Minions", filter_buffer, IM_ARRAYSIZE(filter_buffer));
+
+           
+            ImGui::BeginListBox("##Minions");
+
+            for (size_t i = 0; i < minion_names.size(); ++i)
             {
-                crop_type type = static_cast<crop_type>(i);
-                if (ImGui::Button(to_string(type), ImVec2(100, 30)))
+                if (filter_buffer[0] == '\0' || strstr(minion_names[i], filter_buffer) != nullptr) // Apply filter
                 {
-                    farming::calculate_crop_profit(type, final_profit, final_profit_bazaar, final_drop, type_display);
+                    bool is_selected = (minion_calculator::selected_minion_id_index == static_cast<int>(i));
+                    
+                    if (ImGui::Selectable(minion_names[i], is_selected)) minion_calculator::selected_minion_id_index = static_cast<int>(i);
+
+                    if (is_selected) ImGui::SetItemDefaultFocus();
                 }
             }
-            ImGui::Dummy(ImVec2(0, 10)); //add vertical spacing
+
+            ImGui::EndListBox();
+
+            // Display the selected minion
+            ImGui::Text("Current Minion: %s", minion_names[minion_calculator::selected_minion_id_index]);
+
             
-            ImGui::Text("Current Crop: %s", to_string(type_display));
-            ImGui::Dummy(ImVec2(0, 5));
-            
-            ImGui::Text("Profit Per Hour: %f", final_profit);
-            ImGui::Text("Profit Per Hour (Bazaar): %f", final_profit_bazaar);
-            ImGui::Text("Crops Farmed Per Hour: %d", final_drop);
-            
+            ImGui::Checkbox("Diamond Spreading", &minion_calculator::diamond_spreading);
+
+            if (ImGui::Button("Calculate", ImVec2(400, 50)))
+            {
+                float profit;
+                float bazaar_profit;
+                minion_fuel fuel;
+                minion_calculator::calc_minion_profit(minion::minions[current_minion_id], profit, bazaar_profit, fuel, minion_calculator::diamond_spreading);
+            }
+
+          
+
+
             if (ImGui::Button("Back to main menu", ImVec2(400, 50)))
             {
-                show_farming = false;
+                show_minion_profit = false;
             }
         }
+        //minion_calculator::show_minion_profit_menu(show_minion_profit);
 
         ImGui::End();
     

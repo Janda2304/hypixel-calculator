@@ -51,6 +51,8 @@ public:
     static void calculate_crop_profit(crop_type type, float &final_profit, float &final_profit_bazaar, int &final_drop, crop_type& type_out);
 
     static void calculate_farming_profit(int farming_fortune, crop_type type, float &final_profit, float &final_profit_bazaar, int &final_drop);
+
+    static void show_farming_menu(bool &show_farming);
     
     static std::map<crop_type, crop>& crop_map();
     

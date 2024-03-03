@@ -1,7 +1,7 @@
 ﻿#include "farming.h"
-#include <iostream>
 
-#include "helper.hpp"
+#include <imgui.h>
+
 #include "minions/minion_calculator.h"
 
 
@@ -30,9 +30,10 @@ int farming::farming_fortune = 0;
 /**
  * \brief 
  * \param type crop type
- * \param final_profit
- * \param final_profit_bazaar
- * \param final_drop
+ * \param final_profit final profit out
+ * \param final_profit_bazaar final bazaar profit out
+ * \param final_drop final drop out
+ * \param type_out crop type out 
  */
 void farming::calculate_crop_profit(crop_type type, float& final_profit, float& final_profit_bazaar, int& final_drop, crop_type& type_out)
 {
@@ -41,9 +42,8 @@ void farming::calculate_crop_profit(crop_type type, float& final_profit, float& 
     
     float sell_price = crop.item.sell_price;
     float bazaar_sell_price = crop.item.bazaar_sell_price;
-
     
-    float drop_amount = crop.base_drop * (static_cast<float>(farming_fortune) * 0.01f);
+    float drop_amount = crop.base_drop * (1 + (static_cast<float>(farming_fortune) * 0.01f));
 
     
     float profit_per_one = drop_amount * sell_price;
@@ -56,3 +56,49 @@ void farming::calculate_crop_profit(crop_type type, float& final_profit, float& 
 
     type_out = crop.type;
 }
+
+
+void farming::show_farming_menu(bool &show_farming)
+{
+    if (show_farming)
+    {
+        float final_profit;
+        float final_profit_bazaar;
+        int final_drop;
+        crop_type type_display;
+            
+        ImGui::PushItemWidth(200);
+        ImGui::InputInt("Farming Fortune", &farming::farming_fortune, 0, 0, ImGuiInputTextFlags_CharsDecimal);
+        ImGui::Text("Farming Fortune: %d", farming::farming_fortune);
+        ImGui::Dummy(ImVec2(0, 5));
+
+        ImGui::InputInt("Crop Break Speed (per second, max 20)", &farming::crop_break_speed, 0, 0, ImGuiInputTextFlags_CharsDecimal);
+        ImGui::Text("Crop Break Speed: %d", farming::crop_break_speed);
+        ImGui::Dummy(ImVec2(0, 5));
+            
+        for (int i = 0; i < 10; ++i)
+        {
+            crop_type type = static_cast<crop_type>(i);
+            if (ImGui::Button(to_string(type), ImVec2(100, 30)))
+            {
+                farming::calculate_crop_profit(type, final_profit, final_profit_bazaar, final_drop, type_display);
+            }
+        }
+        ImGui::Dummy(ImVec2(0, 10)); //add vertical spacing
+            
+        ImGui::Text("Current Crop: %s", to_string(type_display));
+        ImGui::Dummy(ImVec2(0, 5));
+            
+        ImGui::Text("Profit Per Hour: %f", final_profit);
+        ImGui::Text("Profit Per Hour (Bazaar): %f", final_profit_bazaar);
+        ImGui::Text("Crops Farmed Per Hour: %d", final_drop);
+            
+        if (ImGui::Button("Back to main menu", ImVec2(400, 50)))
+        {
+            show_farming = false;
+        }
+    }
+}
+
+
+

@@ -13584,8 +13584,8 @@
   },
   {
     "type": 7,
-    "name": "/viewrecipe flower minion II",
-    "id": "/viewrecipe FLOWER_GENERATOR_2",
+    "name": "flower minion II",
+    "id": "FLOWER_GENERATOR_2",
     "tier": 2,
     "storage": 960,
     "base_production_rate": 29,

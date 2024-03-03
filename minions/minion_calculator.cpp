@@ -14,6 +14,11 @@
 #include "../src/buy_requirements.h"
 
 
+
+bool minion_calculator::diamond_spreading = false;
+std::string minion_calculator::selected_minion_id;
+int minion_calculator::selected_minion_id_index;
+
 std::map<std::string, std::string> minion_calculator::odd_items_ids
 {
     {"SLIME_BALL", "SLIMEBALL"},
@@ -153,7 +158,7 @@ void minion_calculator::init_buy_requirements(const std::string &path)
 }
 
 
-void calculate_minion_boost(minion_fuel &fuel, float &production_rate_boost, int &storage_boost, bool &diamond_spreading)
+void calculate_minion_boosts(minion_fuel &fuel, float &production_rate_boost, int &storage_boost, bool &diamond_spreading)
 {
     //fuel
     int i = 0;
@@ -204,7 +209,6 @@ void minion_calculator::calc_minion_profit(minion &minion, float &profit_out, fl
     float multiplier = 1;
     int storage_boost = 0;
     std::unordered_map<std::string, drop_data> minion_drops;
-    std::cout << std::setprecision(3);
 
     for (const auto& minion_drop: minion.drops)
     {
@@ -213,7 +217,7 @@ void minion_calculator::calc_minion_profit(minion &minion, float &profit_out, fl
 
     if (manual_calculation)
     {
-        calculate_minion_boost(fuel, production_rate_boost, storage_boost, diamond_spreading);
+        calculate_minion_boosts(fuel, production_rate_boost, storage_boost, diamond_spreading);
     }
 
     if (fuel.effectivity_percentage > 0)
@@ -461,7 +465,7 @@ void minion_calculator::calc_best_minion()
     bool diamond_spreading = false;
     int storage_boost;
 
-    calculate_minion_boost(fuel, production_rate_boost, storage_boost, diamond_spreading);
+    calculate_minion_boosts(fuel, production_rate_boost, storage_boost, diamond_spreading);
     
     for (auto minion_pair: minion::minions)
     {
