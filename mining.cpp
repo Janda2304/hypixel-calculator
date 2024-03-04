@@ -40,10 +40,14 @@ void mining::show_mgs_menu(bool &show_mgs)
         ImGui::Text("Your Mining Gear Score (MGS) is: %f", mgs);
         ImGui::Text("You will make approximately %f coins a hour", final_profit);
 
-        if (ImGui::Button("Back to main menu", ImVec2(400, 50)))
+        
+        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.8f, 0.2f, 0.2f, 1.0f));
+        if (ImGui::Button("Back to main menu", ImVec2(250, 50)))
         {
             show_mgs = false;
         }
+        ImGui::PopStyleColor();
+        
     }
 }
 

@@ -57,15 +57,16 @@ void farming::calculate_crop_profit(crop_type type, float& final_profit, float& 
     type_out = crop.type;
 }
 
+float final_profit;
+float final_profit_bazaar;
+int final_drop;
+crop_type type_display;
 
 void farming::show_farming_menu(bool &show_farming)
 {
     if (show_farming)
     {
-        float final_profit;
-        float final_profit_bazaar;
-        int final_drop;
-        crop_type type_display;
+       
             
         ImGui::PushItemWidth(200);
         ImGui::InputInt("Farming Fortune", &farming::farming_fortune, 0, 0, ImGuiInputTextFlags_CharsDecimal);
@@ -73,7 +74,7 @@ void farming::show_farming_menu(bool &show_farming)
         ImGui::Dummy(ImVec2(0, 5));
 
         ImGui::InputInt("Crop Break Speed (per second, max 20)", &farming::crop_break_speed, 0, 0, ImGuiInputTextFlags_CharsDecimal);
-        ImGui::Text("Crop Break Speed: %d", farming::crop_break_speed);
+        ImGui::Text("Crop Break Speed: %d/s", farming::crop_break_speed);
         ImGui::Dummy(ImVec2(0, 5));
             
         for (int i = 0; i < 10; ++i)
@@ -82,6 +83,10 @@ void farming::show_farming_menu(bool &show_farming)
             if (ImGui::Button(to_string(type), ImVec2(100, 30)))
             {
                 farming::calculate_crop_profit(type, final_profit, final_profit_bazaar, final_drop, type_display);
+            }
+            if (i % 2 == 0)
+            {
+                ImGui::SameLine();
             }
         }
         ImGui::Dummy(ImVec2(0, 10)); //add vertical spacing
@@ -92,11 +97,13 @@ void farming::show_farming_menu(bool &show_farming)
         ImGui::Text("Profit Per Hour: %f", final_profit);
         ImGui::Text("Profit Per Hour (Bazaar): %f", final_profit_bazaar);
         ImGui::Text("Crops Farmed Per Hour: %d", final_drop);
-            
-        if (ImGui::Button("Back to main menu", ImVec2(400, 50)))
+
+        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.8f, 0.2f, 0.2f, 1.0f));
+        if (ImGui::Button("Back to main menu", ImVec2(250, 50)))
         {
             show_farming = false;
         }
+        ImGui::PopStyleColor();
     }
 }
 

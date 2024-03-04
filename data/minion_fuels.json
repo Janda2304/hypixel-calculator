@@ -1,5 +1,12 @@
 [
   {
+    "effectivity_percentage": 0,
+    "fuel_time": 0,
+    "multiplier": 0,
+    "name": "a_none",
+    "id": "A_NONE"
+  },
+  {
     "effectivity_percentage": 5,
     "fuel_time": 1800,
     "multiplier": 0,
@@ -103,12 +110,5 @@
     "multiplier": 4,
     "name": "Hyper Catalyst",
     "id": "HYPER_CATALYST"
-  },
-  {
-    "effectivity_percentage": 0,
-    "fuel_time": 0,
-    "multiplier": 0,
-    "name": "none",
-    "id": "NONE"
   }
 ]

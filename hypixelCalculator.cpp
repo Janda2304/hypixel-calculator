@@ -7,16 +7,20 @@
 #include "imgui/imgui_impl_opengl3.h"
 #include "mining.h"
 #include "minions/minion_calculator.h"
+#include "src/minion_calculation_data.h"
 
 bool show_mgs = false;
 bool show_farming = false;
 bool show_minion_profit = false;
+minion_calculation_data minion_calculation_data;
+bool minion_simple_calculation = false;
 
-void ImGuiInit(GLFWwindow* window)
+void imgui_init(GLFWwindow *window)
 {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    ImGuiIO &io = ImGui::GetIO();
+    (void) io;
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init("#version 130");
     io.Fonts->AddFontFromFileTTF("../fonts/Roboto-Regular.ttf", 18.0f);
@@ -24,7 +28,7 @@ void ImGuiInit(GLFWwindow* window)
     ImGui::StyleColorsDark();
 }
 
-void ImGuiShutdown()
+void imgui_shutdown()
 {
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
@@ -34,11 +38,10 @@ void ImGuiShutdown()
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
     ImGui::PopFont();
-  
 }
 
 // Main rendering loop
-void renderLoop(GLFWwindow* window)
+void render_loop(GLFWwindow *window)
 {
     // Main loop
     while (!glfwWindowShouldClose(window))
@@ -57,17 +60,17 @@ void renderLoop(GLFWwindow* window)
         glfwGetWindowSize(window, &win_width, &win_height);
 
         // Calculate ImGui window position offset
-        ImVec2 win_pos_offset = ImVec2(static_cast<float>(win_width - fb_width) / 2.0f, static_cast<float>(win_height - fb_height));
+        ImVec2 win_pos_offset = ImVec2(static_cast<float>(win_width - fb_width) / 2.0f,
+                                       static_cast<float>(win_height - fb_height));
 
         // Start ImGui window
         ImGui::SetNextWindowPos(win_pos_offset);
-        ImGui::SetNextWindowSize(ImVec2(static_cast<float>(fb_width), static_cast<float>(fb_height))); // Set window size to framebuffer size
-        ImGui::Begin("Hypixel Calculator", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove);
+        ImGui::SetNextWindowSize(ImVec2(static_cast<float>(fb_width), static_cast<float>(fb_height)));
+        // Set window size to framebuffer size
+        ImGui::Begin("Hypixel Calculator", nullptr,
+                     ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove);
 
 
-     
-       
-        
         if (!show_mgs && !show_farming && !show_minion_profit)
         {
             if (ImGui::Button("Calculate MGS (Mining Gear Score)", ImVec2(400, 50)))
@@ -87,7 +90,11 @@ void renderLoop(GLFWwindow* window)
 
             if (ImGui::Button("Calculate Best Minion", ImVec2(400, 50)))
             {
-                
+            }
+
+            if (ImGui::Button("Exit", ImVec2(400, 50)))
+            {
+                exit(0);
             }
         }
 
@@ -96,31 +103,51 @@ void renderLoop(GLFWwindow* window)
 
         if (show_minion_profit)
         {
-            std::string current_minion_id;
-            std::vector<const char*> minion_names;
+            std::vector<const char *> minion_names;
+            std::vector<const char *> fuel_names;
+
+            std::vector<std::string> minion_ids;
+            std::vector<std::string> fuel_ids;
+
 
             // Populate the vector of minion names
-            for (const auto& minion : minion::minions)
+            for (const auto &minion: minion::minions)
             {
                 minion_names.push_back(minion.second.name.c_str());
+                minion_ids.push_back(minion.first);
             }
 
-            static char filter_buffer[256] = "";
+
+            for (const auto &fuel: minion_fuel::minion_fuels)
+            {
+                fuel_names.push_back(fuel.second.name.c_str());
+                fuel_ids.push_back(fuel.first);
+            }
+
+            static char minion_filter_buffer[256] = "";
+            static char fuel_filter_buffer[256] = "";
 
             // Search bar
             ImGui::PushItemWidth(300);
-            ImGui::InputText("Search Minions", filter_buffer, IM_ARRAYSIZE(filter_buffer));
 
-           
+            ImGui::InputText("Search Minions", minion_filter_buffer, IM_ARRAYSIZE(minion_filter_buffer));
+
+            ImGui::SameLine();
+
+            ImGui::InputText("Search Fuels", fuel_filter_buffer, IM_ARRAYSIZE(fuel_filter_buffer));
+
+
             ImGui::BeginListBox("##Minions");
 
             for (size_t i = 0; i < minion_names.size(); ++i)
             {
-                if (filter_buffer[0] == '\0' || strstr(minion_names[i], filter_buffer) != nullptr) // Apply filter
+                if (minion_filter_buffer[0] == '\0' || strstr(minion_names[i], minion_filter_buffer) != nullptr)
+                // Apply filter
                 {
-                    bool is_selected = (minion_calculator::selected_minion_id_index == static_cast<int>(i));
-                    
-                    if (ImGui::Selectable(minion_names[i], is_selected)) minion_calculator::selected_minion_id_index = static_cast<int>(i);
+                    bool is_selected = (minion_calculator::selected_minion_index == static_cast<int>(i));
+
+                    if (ImGui::Selectable(minion_names[i], is_selected))
+                        minion_calculator::selected_minion_index = static_cast<int>(i);
 
                     if (is_selected) ImGui::SetItemDefaultFocus();
                 }
@@ -128,24 +155,117 @@ void renderLoop(GLFWwindow* window)
 
             ImGui::EndListBox();
 
-            // Display the selected minion
-            ImGui::Text("Current Minion: %s", minion_names[minion_calculator::selected_minion_id_index]);
 
-            
-            ImGui::Checkbox("Diamond Spreading", &minion_calculator::diamond_spreading);
+            ImGui::SameLine();
+            ImGui::Dummy(ImVec2(101, 0));
+            ImGui::SameLine();
 
-            if (ImGui::Button("Calculate", ImVec2(400, 50)))
+            std::string fuel_filter_lowercase = fuel_filter_buffer;
+            std::transform(fuel_filter_lowercase.begin(), fuel_filter_lowercase.end(), fuel_filter_lowercase.begin(),
+                           ::tolower);
+
+
+            ImGui::BeginListBox("##Fuels");
+
+            for (size_t i = 0; i < fuel_names.size(); ++i)
             {
-                float profit;
-                float bazaar_profit;
-                minion_fuel fuel;
-                minion_calculator::calc_minion_profit(minion::minions[current_minion_id], profit, bazaar_profit, fuel, minion_calculator::diamond_spreading);
+                // Convert the fuel name to lowercase
+                std::string fuel_name_lowercase = fuel_names[i];
+                std::transform(fuel_name_lowercase.begin(), fuel_name_lowercase.end(), fuel_name_lowercase.begin(),
+                               ::tolower);
+
+                // Apply case insensitive filter
+                if (fuel_filter_lowercase.empty() || fuel_name_lowercase.find(fuel_filter_lowercase) !=
+                    std::string::npos)
+                {
+                    bool is_selected = (minion_calculator::selected_fuel_index == static_cast<int>(i));
+
+                    if (ImGui::Selectable(fuel_names[i], is_selected))
+                        minion_calculator::selected_fuel_index = static_cast<int>(i);
+
+                    if (is_selected) ImGui::SetItemDefaultFocus();
+                }
             }
 
-          
+            ImGui::EndListBox();
 
 
-            if (ImGui::Button("Back to main menu", ImVec2(400, 50)))
+            ImGui::Text("Current Minion: %s", minion_names[minion_calculator::selected_minion_index]);
+
+            ImGui::SameLine();
+            ImGui::Dummy(ImVec2(190, 0));
+            ImGui::SameLine();
+
+            ImGui::Text("Current Fuel: %s", fuel_names[minion_calculator::selected_fuel_index]);
+
+
+            ImGui::Checkbox("Diamond Spreading", &minion_calculator::diamond_spreading);
+            ImGui::Dummy(ImVec2(0, 5));
+
+            ImGui::Checkbox("Simple Calculation", &minion_simple_calculation);
+            ImGui::Dummy(ImVec2(0, 5));
+
+            ImGui::PushItemWidth(150);
+            ImGui::InputInt("Storage Capacity (stacks)", &minion_calculator::storage_capacity, 0, 0,
+                            ImGuiInputTextFlags_CharsDecimal);
+
+            ImGui::SameLine();
+            ImGui::Dummy(ImVec2(10, 0));
+            ImGui::SameLine();
+
+            ImGui::Text("Storage Capacity (items): %d", minion_calculator::storage_capacity * 64);
+            ImGui::InputInt("Other Percentage Boosts", &minion_calculator::other_boosts_percentage, 0, 0,
+                            ImGuiInputTextFlags_CharsDecimal);
+
+
+            if (ImGui::Button("Calculate", ImVec2(400, 40)))
+            {
+                minion_calculator::selected_fuel_id = fuel_ids[minion_calculator::selected_fuel_index];
+                minion_calculator::selected_minion_id = minion_ids[minion_calculator::selected_minion_index];
+
+                minion_calculator::calc_minion_profit(minion::minions[minion_calculator::selected_minion_id],
+                                                      minion_calculation_data,
+                                                      minion_fuel::minion_fuels[minion_calculator::selected_fuel_id],
+                                                      minion_calculator::diamond_spreading);
+            }
+
+
+            ImGui::Dummy(ImVec2(0, 5));
+            ImGui::BeginListBox("##Minion Info", ImVec2(400, 200));
+
+
+            ImGui::Text("Minion Production Rate: %f s", minion_calculation_data.minion_production_rate);
+            ImGui::Dummy(ImVec2(0, 10));
+            if (!minion_simple_calculation)
+            {
+                ImGui::Text("DROPS:");
+           
+                for (const auto &drop: minion_calculation_data.minion_drops)
+                {
+                    ImGui::Text("%s : ", item::items[drop.first].name.c_str());
+                    ImGui::Text("Production per hour: %f", minion_calculation_data.drops_per_hour[drop.first]);
+                    ImGui::Text("Profit per hour (NPC): %f", minion_calculation_data.profits_per_hour[drop.first]);
+                    ImGui::Text("Profit per hour (Bazaar): %f",
+                                minion_calculation_data.bazaar_profit_per_hour[drop.first]);
+                    ImGui::Dummy(ImVec2(0, 10));
+                }
+
+                for (auto skill: minion_calculation_data.skill_xp_drops)
+                {
+                    ImGui::Text("%s xp (per hour): %f", to_string(skill.first), skill.second);
+                }
+
+                ImGui::Dummy(ImVec2(0, 10));
+            } else
+            {
+                ImGui::Text("Sum Profit per hour (NPC): %f", minion_calculation_data.sum_profit_npc);
+                ImGui::Text("Sum Profit per hour (Bazaar): %f", minion_calculation_data.sum_profit_bazaar);
+            }
+
+            ImGui::EndListBox();
+
+
+            if (ImGui::Button("Back to main menu", ImVec2(400, 40)))
             {
                 show_minion_profit = false;
             }
@@ -153,7 +273,7 @@ void renderLoop(GLFWwindow* window)
         //minion_calculator::show_minion_profit_menu(show_minion_profit);
 
         ImGui::End();
-    
+
 
         // Rendering
         glClear(GL_COLOR_BUFFER_BIT);
@@ -161,14 +281,10 @@ void renderLoop(GLFWwindow* window)
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         glfwSwapBuffers(window);
     }
-    ImGuiShutdown();
-    glfwDestroyWindow(window);
-    glfwTerminate();
 }
 
 int main()
 {
-
     // initialize the data
     minion_calculator::init_fuels("../data/minion_fuels.json");
     minion_calculator::init_minions("../data/minions.json");
@@ -177,58 +293,24 @@ int main()
     minion_calculator::init_recipes("../data/minion_recipes.json");
     minion_calculator::init_buy_requirements("../data/item_buy_requirements.json");
 
-    
+
     // Initialize GLFW
     if (!glfwInit()) return -1;
-      
+
 
     // Create a windowed mode window and its OpenGL context
-    GLFWwindow* window = glfwCreateWindow(1280, 720, "Multipurpose Hypixel Skyblock Calculator", nullptr, nullptr);
-    
+    GLFWwindow *window = glfwCreateWindow(1280, 720, "Multipurpose Hypixel Skyblock Calculator", nullptr, nullptr);
+
     if (!window) return -1;
-    
+
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1); // Enable vsync
-    ImGuiInit(window);
-    
-    renderLoop(window);
+    imgui_init(window);
 
-    
-    while (true)
-    {
-        int choice;
-        helper::clear();
-        std::cout << "1)calculate MGS\n2)calculate farming profits\n3)calculate minion profit\n4)calculate best minion\n5)end program\n";
-        std::cin >> choice;
+    render_loop(window);
 
-        std::string minion_id;
-        float profit;
-        minion_fuel fuel;
-
-        switch (choice)
-        {
-        case 1: 
-            break;
-
-        case 2: 
-            break;
-
-        case 3:
-            helper::clear();
-            std::cout << "Enter your minion id:\n";
-            std::cin >> minion_id;
-
-            helper::clear();
-            minion_calculator::calc_minion_profit(minion::minions[minion_id], profit, profit, fuel);
-            helper::pause();
-            break;
-
-        case 4:
-            minion_calculator::calc_best_minion();
-            helper::pause();
-            break;
-
-        default: return 0;
-        }
-    }
+    imgui_shutdown();
+    glfwDestroyWindow(window);
+    glfwTerminate();
+    return 0;
 }
