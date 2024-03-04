@@ -22,19 +22,22 @@ void mining::show_mgs_menu(bool &show_mgs)
         float final_profit;
         float mgs;
         ImGui::PushItemWidth(200);
-        ImGui::InputInt("Mining Speed", &mining::mining_speed, 0, 0, ImGuiInputTextFlags_CharsDecimal);
+        ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(10, 8));
+        
+        ImGui::InputInt("##Mining Speed", &mining::mining_speed, 0, 0, ImGuiInputTextFlags_CharsDecimal);
+        ImGui::SameLine();
         ImGui::Text("Mining Speed: %d", mining::mining_speed);
-        ImGui::Dummy(ImVec2(0, 5));
             
-        ImGui::InputInt("Mining Fortune", &mining::mining_fortune, 0, 0, ImGuiInputTextFlags_CharsDecimal);
+        ImGui::InputInt("##Mining Fortune", &mining::mining_fortune, 0, 0, ImGuiInputTextFlags_CharsDecimal);
+        ImGui::SameLine();
         ImGui::Text("Mining Fortune: %d", mining::mining_fortune);
-        ImGui::Dummy(ImVec2(0, 5));
             
-        ImGui::InputFloat("Pristine", &mining::pristine, 0.0f, 0.0f, "%.3f", ImGuiInputTextFlags_CharsDecimal);
+        ImGui::InputFloat("##Pristine", &mining::pristine, 0.0f, 0.0f, "%.3f", ImGuiInputTextFlags_CharsDecimal);
+        ImGui::SameLine();
         ImGui::Text("Pristine: %f", mining::pristine);
-            
-        ImGui::Dummy(ImVec2(0, 10)); //add vertical spacing
-
+        ImGui::Dummy(ImVec2(0,15));
+     
+        
         mining::calculate_mgs(mining::mining_speed, mining::mining_fortune, mining::pristine, final_profit, mgs);
 
         ImGui::Text("Your Mining Gear Score (MGS) is: %f", mgs);

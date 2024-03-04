@@ -46,7 +46,8 @@ std::map<std::string, std::string> minion_calculator::odd_items_ids
     {"CARROT_ITEM", "CARROT"},
     {"POTATO_ITEM", "POTATO"},
     {"CHEESE_FUEL", "TASTY_CHEESE"},
-    {"NETHER_STALK", "NETHER_WART"}
+    {"NETHER_STALK", "NETHER_WART"},
+    {"SNOW_BALL", "SNOWBALL"}
 };
 
 
@@ -165,7 +166,7 @@ void minion_calculator::init_buy_requirements(const std::string &path)
 
 
 
-void minion_calculator::calc_minion_profit(minion &minion, minion_calculation_data& calculation_data, minion_fuel &fuel, bool diamond_spreading)
+void minion_calculator::calc_minion_profit(minion minion, minion_calculation_data& calculation_data, const minion_fuel& fuel, bool diamond_spreading)
 {
     float production_rate_boost = 0;
     float multiplier = 1;
@@ -250,23 +251,9 @@ void minion_calculator::calc_minion_profit(minion &minion, minion_calculation_da
 
 
     float drops_per_hour_sum = 0;
-
-    // //at the end means that the code is implemented in the data struct but not in the calculator, //- means that's in the calculator too
-
-    //TODO: out minion_drops//-
-    //TODO: out drops_per_hour//-
-    //TODO: out profits_per_hour//-
-    //TODO: out bazaar_profit_per_hour//-
-    //TODO: out skill_xp_drops//-
-    //TODO: out storage_fill_up_time//-
-    //TODO: out fuel data//-
-    
-    //TODO: out sum_profit//-
-    //TODO: out sum_bazaar_profit//-
     
     //TODO: out crafting_recipe_data
-
-    //TODO: out return_ratio//-
+    
     
     for (const auto &id: drops_per_hour)
     {

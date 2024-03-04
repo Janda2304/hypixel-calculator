@@ -2,8 +2,8 @@
 
 #include <imgui.h>
 
+#include "imgui/imgui_util.h"
 #include "minions/minion_calculator.h"
-
 
 std::map<crop_type, crop>& farming::crop_map()
 {
@@ -69,13 +69,19 @@ void farming::show_farming_menu(bool &show_farming)
        
             
         ImGui::PushItemWidth(200);
-        ImGui::InputInt("Farming Fortune", &farming::farming_fortune, 0, 0, ImGuiInputTextFlags_CharsDecimal);
+        ImGui::InputInt("##Farming Fortune", &farming::farming_fortune, 0, 0, ImGuiInputTextFlags_CharsDecimal);
+        ImGui::SameLine();
         ImGui::Text("Farming Fortune: %d", farming::farming_fortune);
-        ImGui::Dummy(ImVec2(0, 5));
+        
+        ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(2, 5));
 
-        ImGui::InputInt("Crop Break Speed (per second, max 20)", &farming::crop_break_speed, 0, 0, ImGuiInputTextFlags_CharsDecimal);
-        ImGui::Text("Crop Break Speed: %d/s", farming::crop_break_speed);
-        ImGui::Dummy(ImVec2(0, 5));
+        ImGui::InputInt("##Crop Break Speed", &farming::crop_break_speed, 0, 0, ImGuiInputTextFlags_CharsDecimal);
+        ImGui::SameLine();
+        ImGui::Text("Crop Break Speed: %d/s (max 20)", farming::crop_break_speed);
+
+        ImGui::Dummy(ImVec2(0,5));
+
+        ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4, 4));
             
         for (int i = 0; i < 10; ++i)
         {
@@ -89,16 +95,17 @@ void farming::show_farming_menu(bool &show_farming)
                 ImGui::SameLine();
             }
         }
-        ImGui::Dummy(ImVec2(0, 10)); //add vertical spacing
+        ImGui::Dummy(ImVec2(0, 5));
             
         ImGui::Text("Current Crop: %s", to_string(type_display));
-        ImGui::Dummy(ImVec2(0, 5));
             
         ImGui::Text("Profit Per Hour: %f", final_profit);
         ImGui::Text("Profit Per Hour (Bazaar): %f", final_profit_bazaar);
-        ImGui::Text("Crops Farmed Per Hour: %d", final_drop);
-
-        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.8f, 0.2f, 0.2f, 1.0f));
+        ImGui::Text("Crops Farmed Per Hour: %f", final_drop);
+        
+        imgui_util::change_button_color(0.8f, 0.2f, 0.2f, 0.6f);
+        imgui_util::change_button_hover_color(0.8f, 0.2f, 0.2f, 1.0f);
+        
         if (ImGui::Button("Back to main menu", ImVec2(250, 50)))
         {
             show_farming = false;

@@ -44,7 +44,7 @@ public:
 
     static void save_minions(const std::string &path);
 
-    static void calc_minion_profit(::minion &minion, minion_calculation_data& calculation_data, minion_fuel &fuel, bool diamond_spreading);
+    static void calc_minion_profit(::minion minion, minion_calculation_data& calculation_data, const minion_fuel& fuel, bool diamond_spreading);
 
     static void show_minion_profit_menu(bool &show_minion_profit);
 

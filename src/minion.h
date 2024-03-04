@@ -16,6 +16,26 @@ enum minion_type
     slayer_minion
 };
 
+inline const char *to_string(minion_type e)
+{
+    switch (e)
+    {
+        case mining_minion: return "mining_minion";
+        case farming_minion: return "farming_minion";
+        case foraging_minion: return "foraging_minion";
+        case fishing_minion: return "fishing_minion";
+        case combat_minion: return "combat_minion";
+        case alchemy_minion: return "alchemy_minion";
+        case enchanting_minion: return "enchanting_minion";
+        case other_minion: return "other_minion";
+        case slayer_minion: return "slayer_minion";
+        default: return "unknown";
+    }
+}
+
+
+
+
 /**
  * \brief struct to represent a minion
  * \param type type of the minion
