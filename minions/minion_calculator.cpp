@@ -198,13 +198,20 @@ void minion_calculator::calc_minion_profit(minion &minion, minion_calculation_da
         diamond.drop_rate = 1;
         diamond.xp_drop.skill = skills::mining;
         diamond.xp_drop.xp = 0.4f;
-        minion.add_drop(diamond);
+        minion_drops.insert({"DIAMOND", diamond});
     }
     else if (diamond_spreading && minion.id.find("DIAMOND") != std::string::npos)
     {
         //if the minion is a diamond minion and diamond spreading is used, the production rate is increased by 10%
         production_rate_boost += 10;
     }
+
+    if (!diamond_spreading && minion.id.find("DIAMOND") == std::string::npos)
+    {
+        minion_drops.erase("DIAMOND");
+    }
+
+    
     
     float production_rate = -1;
     float actions_per_hour;
@@ -279,7 +286,7 @@ void minion_calculator::calc_minion_profit(minion &minion, minion_calculation_da
     float fill_up_time = minion.storage / drops_per_hour_sum; //hours
     
     
-    std::cout << "Minion crafting recipe: " << '\n';
+   // std::cout << "Minion crafting recipe: " << '\n';
 
     crafting_recipe minion_recipe = crafting_recipe::recipes[minion.id];
     item_buy_requirements requirement = item_buy_requirements::buy_requirements[minion.id];
@@ -288,14 +295,14 @@ void minion_calculator::calc_minion_profit(minion &minion, minion_calculation_da
     float base_item_drops = 0;
     if (!minion_recipe.craft_id.empty())
     {
-        minion_recipe.print_recipe_short();
+        //minion_recipe.print_recipe_short();
         base_item_drops = drops_per_hour[minion_recipe.item_id];
     }
 
 
     if (!requirement.offer_id.empty())
     {
-        requirement.print_buy_requirements_short();
+        //requirement.print_buy_requirements_short();
 
         //not needed because t12 never wants the base item, but just in case they change something
         base_item_drops = drops_per_hour[requirement.item_id];
@@ -311,14 +318,12 @@ void minion_calculator::calc_minion_profit(minion &minion, minion_calculation_da
     if (base_item_drops > 0)
     {
         return_ratio = static_cast<float>(minion_recipe.item_amount) / base_item_drops;
-        std::cout << "The minion returns the resource investment in " << return_ratio << " hours" << '\n';
+       // std::cout << "The minion returns the resource investment in " << return_ratio << " hours" << '\n';
     }
     else if (base_item_drops <= 0 && !minion_recipe.craft_id.empty())
     {
-        crafting_recipe minion_item_recipe = crafting_recipe::recipes[minion_recipe.item_id];
-        crafting_recipe enchanted_item_recipe;
-        crafting_recipe enchanted_item_recipe_2;
-        int base_item_needed_amount = 0;
+        minion_item_recipe = crafting_recipe::recipes[minion_recipe.item_id];
+        base_item_needed_amount = 0;
         if (drops_per_hour.find(minion_item_recipe.item_id) == drops_per_hour.end())
         {
             enchanted_item_recipe_2 = minion_item_recipe;
@@ -327,7 +332,7 @@ void minion_calculator::calc_minion_profit(minion &minion, minion_calculation_da
 
             int enchanted_item_needed_amount = enchanted_item_recipe_2.item_amount * minion_recipe.item_amount;
             base_item_needed_amount = enchanted_item_needed_amount * enchanted_item_recipe.item_amount;
-            std::cout << enchanted_item_needed_amount << "x " << enchanted_item_recipe_2.item_id << '\n';
+           // std::cout << enchanted_item_needed_amount << "x " << enchanted_item_recipe_2.item_id << '\n';
         }
         else
         {
@@ -335,7 +340,7 @@ void minion_calculator::calc_minion_profit(minion &minion, minion_calculation_da
             base_item_needed_amount = enchanted_item_recipe.item_amount * minion_recipe.item_amount;
         }
 
-        std::cout << base_item_needed_amount << "x " << enchanted_item_recipe.item_id << '\n';
+       // std::cout << base_item_needed_amount << "x " << enchanted_item_recipe.item_id << '\n';
         return_ratio = static_cast<float>(base_item_needed_amount) / drops_per_hour[enchanted_item_recipe.item_id];
     }
     else
@@ -349,27 +354,27 @@ void minion_calculator::calc_minion_profit(minion &minion, minion_calculation_da
 
             int enchanted_item_needed_amount = enchanted_item_recipe_2.item_amount * requirement.item_amount;
             base_item_needed_amount = enchanted_item_needed_amount * enchanted_item_recipe.item_amount;
-            std::cout << enchanted_item_needed_amount << "x " << enchanted_item_recipe_2.item_id << '\n';
+           // std::cout << enchanted_item_needed_amount << "x " << enchanted_item_recipe_2.item_id << '\n';
         }
         else
         {
             enchanted_item_recipe = minion_item_recipe;
             base_item_needed_amount = enchanted_item_recipe.item_amount * requirement.item_amount;
         }
-        std::cout << base_item_needed_amount << "x " << enchanted_item_recipe.item_id << '\n';
+        //std::cout << base_item_needed_amount << "x " << enchanted_item_recipe.item_id << '\n';
         if (drops_per_hour.find(enchanted_item_recipe.item_id) != drops_per_hour.end())
         {
             return_ratio = static_cast<float>(base_item_needed_amount) / drops_per_hour[enchanted_item_recipe.item_id];
         }
         else
         {
-            std::cout << "The minion don't produce the resources used to craft it's tier\n";
+           // std::cout << "The minion don't produce the resources used to craft it's tier\n";
             return;
         }
     }
 
 
-    if (minion.tier > 1)
+    /*if (minion.tier > 1)
     {
         std::stringstream ss(minion.id);
         std::string id;
@@ -381,9 +386,8 @@ void minion_calculator::calc_minion_profit(minion &minion, minion_calculation_da
 
         std::string tier_id = ids[0] + "_" + ids[1] + "_" + std::to_string(minion.tier - 1);
         std::cout << tier_id << '\n';
-    }
-
-    //std::cout << "-----------------------------------" << '\n';
+    }*/
+    
     
     float needed_fuel = 86400.0f / static_cast<float>(fuel.fuel_time);
     fuel_calculation_data.fuel_duration = fuel.fuel_time / 3600.0f;

@@ -206,16 +206,14 @@ void render_loop(GLFWwindow *window)
             ImGui::Dummy(ImVec2(0, 5));
 
             ImGui::PushItemWidth(150);
-            ImGui::InputInt("Storage Capacity (stacks)", &minion_calculator::storage_capacity, 0, 0,
-                            ImGuiInputTextFlags_CharsDecimal);
+            ImGui::InputInt("Storage Capacity (stacks)", &minion_calculator::storage_capacity, 0, 0, ImGuiInputTextFlags_CharsDecimal);
 
             ImGui::SameLine();
             ImGui::Dummy(ImVec2(10, 0));
             ImGui::SameLine();
 
             ImGui::Text("Storage Capacity (items): %d", minion_calculator::storage_capacity * 64);
-            ImGui::InputInt("Other Percentage Boosts", &minion_calculator::other_boosts_percentage, 0, 0,
-                            ImGuiInputTextFlags_CharsDecimal);
+            ImGui::InputInt("Other Percentage Boosts", &minion_calculator::other_boosts_percentage, 0, 0, ImGuiInputTextFlags_CharsDecimal);
 
 
             if (ImGui::Button("Calculate", ImVec2(400, 40)))
@@ -245,8 +243,7 @@ void render_loop(GLFWwindow *window)
                     ImGui::Text("%s : ", item::items[drop.first].name.c_str());
                     ImGui::Text("Production per hour: %f", minion_calculation_data.drops_per_hour[drop.first]);
                     ImGui::Text("Profit per hour (NPC): %f", minion_calculation_data.profits_per_hour[drop.first]);
-                    ImGui::Text("Profit per hour (Bazaar): %f",
-                                minion_calculation_data.bazaar_profit_per_hour[drop.first]);
+                    ImGui::Text("Profit per hour (Bazaar): %f", minion_calculation_data.bazaar_profit_per_hour[drop.first]);
                     ImGui::Dummy(ImVec2(0, 10));
                 }
 
