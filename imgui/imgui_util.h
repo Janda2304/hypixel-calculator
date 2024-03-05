@@ -39,6 +39,8 @@ public:
     static void change_slider_grab_active_color(ImVec4 color);
     static void change_slider_grab_active_color(float r, float g, float b, float a);
 
+    static void reset_color();
+
     static void change_item_width(float width);
 
     static bool rounded_button(const char* label, ImVec2 size, float rounding);

@@ -128,6 +128,11 @@ void imgui_util::change_slider_grab_active_color(const float r, const float g, c
     ImGui::PushStyleColor(ImGuiCol_SliderGrabActive, ImVec4(r, g, b, a));
 }
 
+void imgui_util::reset_color()
+{
+    ImGui::PopStyleColor();
+}
+
 void imgui_util::change_item_width(const float width)
 {
     ImGui::PushItemWidth(width);

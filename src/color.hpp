@@ -41,12 +41,20 @@ struct color
         return {1.0f, 1.0f, 1.0f, a};
     }
 
-    static color dark_green()
+    
+    /**
+     * 
+     * @return r: 0.0f, g: 0.5f, b: 0.0f, a: 1.0f
+     */
+    static color green()
     {
         return {0.0f, 0.5f, 0.0f, 1.0f};
     }
 
-    static color dark_green(float a)
+    /**
+     * @return r: 0.0f, g: 0.5f, b: 0.0f, a: <b>a</b>
+     */
+    static color green(float a)
     {
         return {0.0f, 0.5f, 0.0f, a};
     }
@@ -60,6 +68,12 @@ struct color
     {
         return {0.8f, 0.2f, 0.2f, a};
     }
+
+    static color transparent()
+    {
+        return {0.0f, 0.0f, 0.0f, 0.0f};
+    }
+    
     
     operator ImVec4() const
     {

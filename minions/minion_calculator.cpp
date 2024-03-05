@@ -47,7 +47,9 @@ std::map<std::string, std::string> minion_calculator::odd_items_ids
     {"POTATO_ITEM", "POTATO"},
     {"CHEESE_FUEL", "TASTY_CHEESE"},
     {"NETHER_STALK", "NETHER_WART"},
-    {"SNOW_BALL", "SNOWBALL"}
+    {"SNOW_BALL", "SNOWBALL"},
+    {"RAW_FISH:3", "PUFFERFISH"},
+    {"RAW_FISH:2", "CLOWNFISH"}
 };
 
 
