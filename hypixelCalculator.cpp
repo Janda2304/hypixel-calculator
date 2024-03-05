@@ -1,13 +1,13 @@
 ﻿#include <GLFW/glfw3.h>
 
 #include "farming.h"
-#include "helper.hpp"
 #include "imgui.h"
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
 #include "mining.h"
 #include "imgui/imgui_util.h"
 #include "minions/minion_calculator.h"
+#include "src/color.hpp"
 #include "src/minion_calculation_data.h"
 
 bool show_mgs = false;
@@ -50,6 +50,7 @@ void imgui_shutdown()
     ImGui::PopFont();
 }
 
+
 // Main rendering loop
 void render_loop(GLFWwindow *window)
 {
@@ -75,15 +76,25 @@ void render_loop(GLFWwindow *window)
         ImGui::SetNextWindowPos(win_pos_offset);
         ImGui::SetNextWindowSize(ImVec2(static_cast<float>(fb_width), static_cast<float>(fb_height)));
         ImGui::Begin("Hypixel Calculator", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove);
+
+        ImVec4 hover_color = ImVec4(0.2f, 0.2f, 0.2f, 0.5f);
+        ImVec4 clicked_color = color::black(0.75f);
         
-        imgui_util::change_text_color(1, 1, 1, 1);
+        imgui_util::change_text_color(color::white());
         imgui_util::change_background_color(0.071f, 0.071f, 0.071f, 1);
-        imgui_util::change_button_hover_color(0.2f, 0.2f, 0.2f, 0.5f);
+        imgui_util::change_button_hover_color(hover_color);
         imgui_util::change_button_color(0, 0, 0, 0.5f);
         imgui_util::change_frame_background_color(0.25f, 0.25f, 0.25f, 0.5f);
         imgui_util::change_item_rounding(5);
-        imgui_util::change_button_clicked_color(0,0,0,0.75f);
+        imgui_util::change_button_clicked_color(clicked_color);
 
+        imgui_util::change_slider_grab_color(color::dark_green());
+        ImGui::PushStyleColor(ImGuiCol_SliderGrab, ImVec4(0, 0.5f, 0, 1.0f));
+        ImGui::PushStyleColor(ImGuiCol_SliderGrabActive, ImVec4(0, 0.7f, 0, 1.0f));
+        ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, hover_color);
+        ImGui::PushStyleColor(ImGuiCol_FrameBgActive, clicked_color);
+        ImGui::PushStyleColor(ImGuiCol_CheckMark, ImVec4(0, 0.5f, 0, 1.0f));
+        
         
 
         if (!show_mgs && !show_farming && !show_minion_profit)
@@ -136,14 +147,11 @@ void render_loop(GLFWwindow *window)
 
         if (show_minion_profit)
         {
-            ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.2f, 0.2f, 0.2f, 0.5f));
-            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0.5f));
             std::vector<const char *> minion_names;
             std::vector<const char *> fuel_names;
 
             std::vector<std::string> minion_ids;
             std::vector<std::string> fuel_ids;
-
 
             // Populate the vector of minion names
             for (const auto &minion: minion::minions)
@@ -166,7 +174,7 @@ void render_loop(GLFWwindow *window)
             ImGui::BeginListBox("##Minion Selection", ImVec2(305, 230));
             
             ImGui::PushItemWidth(300);
-            ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 5));
+            imgui_util::change_item_spacing_y(5);
 
             
             ImGui::InputText("##Search Minions", minion_filter_buffer, IM_ARRAYSIZE(minion_filter_buffer));
@@ -186,22 +194,24 @@ void render_loop(GLFWwindow *window)
                     if (is_selected) ImGui::SetItemDefaultFocus();
                 }
             }
-            ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0)); //reset spacing
+            
+           
 
             
             ImGui::EndListBox();
 
             ImGui::Text("Current Minion: %s", minion_names[minion_calculator::selected_minion_index]);
             ImGui::EndListBox();
-            
+
+            imgui_util::change_item_spacing_x(10);
             ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(10, 0));
             ImGui::SameLine();
            
             
             ImGui::BeginListBox("##Fuel Selection", ImVec2(305, 230));
             
-            ImGui::PushItemWidth(300);
-            ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 5));
+            imgui_util::change_item_width(300);
+            imgui_util::change_item_spacing_y(5);
 
             
             ImGui::InputText("Search Fuels", fuel_filter_buffer, IM_ARRAYSIZE(fuel_filter_buffer));
@@ -239,20 +249,19 @@ void render_loop(GLFWwindow *window)
 
 
             ImGui::Dummy(ImVec2(0, 10));
-            ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 5));
+            imgui_util::change_item_spacing_y(5);
 
             ImGui::Checkbox("Diamond Spreading", &minion_calculator::diamond_spreading);
 
             ImGui::Checkbox("Simple Calculation", &minion_simple_calculation);
 
-            ImGui::PushItemWidth(155);
-            ImGui::InputInt("Storage Capacity (stacks)", &minion_calculator::storage_capacity, 0, 0, ImGuiInputTextFlags_CharsDecimal);
+            imgui_util::change_item_width(155);
+            ImGui::SliderInt("##Storage Capacity", &minion_calculator::storage_capacity, 0, 27);
 
-            ImGui::SameLine();
-            ImGui::Dummy(ImVec2(10, 0));
+        
             ImGui::SameLine();
 
-            ImGui::Text("Storage Capacity (items): %d", minion_calculator::storage_capacity * 64);
+            ImGui::Text("Storage Capacity: %d items", minion_calculator::storage_capacity * 64);
             ImGui::InputInt("Other Percentage Boosts", &minion_calculator::other_boosts_percentage, 0, 0, ImGuiInputTextFlags_CharsDecimal);
     
 
@@ -274,6 +283,7 @@ void render_loop(GLFWwindow *window)
 
             ImGui::Text("Minion Production Rate: %f s", minion_calculation_data.minion_production_rate);
             ImGui::Dummy(ImVec2(0, 10));
+            ImGui::Text("Minion will fill up in %f hours", minion_calculation_data.storage_fill_up_time);
             if (!minion_simple_calculation)
             {
                 ImGui::Text("DROPS:");

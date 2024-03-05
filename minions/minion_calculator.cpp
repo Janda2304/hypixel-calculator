@@ -228,7 +228,7 @@ void minion_calculator::calc_minion_profit(minion minion, minion_calculation_dat
     {
         production_rate_multiplier = 1;
     }
-    production_rate_boost += minion_calculator::other_boosts_percentage;
+    production_rate_boost += static_cast<float>(other_boosts_percentage);
     
     for (const auto &drop: minion_drops)
     {
@@ -270,7 +270,7 @@ void minion_calculator::calc_minion_profit(minion minion, minion_calculation_dat
         
         skill_xp_drops[drop.xp_drop.skill] += drop.xp_drop.xp * id.second;
     }
-    float fill_up_time = minion.storage / drops_per_hour_sum; //hours
+    float fill_up_time = static_cast<float>(minion.storage + (storage_capacity * 64)) / drops_per_hour_sum; //hours
     
     
    // std::cout << "Minion crafting recipe: " << '\n';

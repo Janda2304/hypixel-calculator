@@ -90,6 +90,16 @@ void imgui_util::reset_item_spacing()
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
 }
 
+void imgui_util::change_slider_grab_color(const ImVec4 color)
+{
+    ImGui::PushStyleColor(ImGuiCol_SliderGrab, color);
+}
+
+void imgui_util::change_slider_grab_color(const float r, const float g, const float b, const float a)
+{
+    ImGui::PushStyleColor(ImGuiCol_SliderGrab, ImVec4(r, g, b, a));
+}
+
 bool imgui_util::rounded_button(const char *label, const ImVec2 size, const float rounding)
 {
     ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, rounding);
@@ -97,3 +107,31 @@ bool imgui_util::rounded_button(const char *label, const ImVec2 size, const floa
     ImGui::PopStyleVar();
     return result;
 }
+
+void imgui_util::dummy(const ImVec2 size)
+{
+    ImGui::Dummy(size);
+}
+
+void imgui_util::dummy(const float x, const float y)
+{
+    ImGui::Dummy(ImVec2(x, y));
+}
+
+void imgui_util::change_slider_grab_active_color(const ImVec4 color)
+{
+    ImGui::PushStyleColor(ImGuiCol_SliderGrabActive, ImVec4(0, 0.5f, 0, 1.0f));
+}
+
+void imgui_util::change_slider_grab_active_color(const float r, const float g, const float b, const float a)
+{
+    ImGui::PushStyleColor(ImGuiCol_SliderGrabActive, ImVec4(r, g, b, a));
+}
+
+void imgui_util::change_item_width(const float width)
+{
+    ImGui::PushItemWidth(width);
+}
+
+
+

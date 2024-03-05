@@ -17,10 +17,8 @@ add_executable(hypixel_calculator
         src/item_xp_drop.cpp
         imgui/imgui_impl_glfw.cpp
         imgui/imgui_impl_opengl3.cpp
-        src/minion_calculation_data.h
-        src/fuel_calculation_data.h
         imgui/imgui_util.cpp
-        imgui/imgui_util.h
+        src/color.hpp
 )
 
 

@@ -4,6 +4,7 @@
 
 #include "imgui/imgui_util.h"
 #include "minions/minion_calculator.h"
+#include "src/color.hpp"
 
 std::map<crop_type, crop>& farming::crop_map()
 {
@@ -74,14 +75,15 @@ void farming::show_farming_menu(bool &show_farming)
         ImGui::Text("Farming Fortune: %d", farming::farming_fortune);
         
         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(2, 5));
+   
 
-        ImGui::InputInt("##Crop Break Speed", &farming::crop_break_speed, 0, 0, ImGuiInputTextFlags_CharsDecimal);
+        ImGui::SliderInt("##Crop Break Speed", &farming::crop_break_speed, 1, 20);
         ImGui::SameLine();
-        ImGui::Text("Crop Break Speed: %d/s (max 20)", farming::crop_break_speed);
+        ImGui::Text("Crop Break Speed: %d/s", farming::crop_break_speed);
 
         ImGui::Dummy(ImVec2(0,5));
 
-        ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4, 4));
+        imgui_util::change_item_spacing(4,4);
             
         for (int i = 0; i < 10; ++i)
         {
@@ -95,6 +97,7 @@ void farming::show_farming_menu(bool &show_farming)
                 ImGui::SameLine();
             }
         }
+        imgui_util::dummy(0, 5);
         ImGui::Dummy(ImVec2(0, 5));
             
         ImGui::Text("Current Crop: %s", to_string(type_display));
@@ -103,8 +106,8 @@ void farming::show_farming_menu(bool &show_farming)
         ImGui::Text("Profit Per Hour (Bazaar): %f", final_profit_bazaar);
         ImGui::Text("Crops Farmed Per Hour: %f", final_drop);
         
-        imgui_util::change_button_color(0.8f, 0.2f, 0.2f, 0.6f);
-        imgui_util::change_button_hover_color(0.8f, 0.2f, 0.2f, 1.0f);
+        imgui_util::change_button_color(color::persian_red(0.6f));
+        imgui_util::change_button_hover_color(color::persian_red(1));
         
         if (ImGui::Button("Back to main menu", ImVec2(250, 50)))
         {
