@@ -104,7 +104,7 @@ void farming::show_farming_menu(bool &show_farming)
             
         ImGui::Text("Profit Per Hour: %f", final_profit);
         ImGui::Text("Profit Per Hour (Bazaar): %f", final_profit_bazaar);
-        ImGui::Text("Crops Farmed Per Hour: %f", final_drop);
+        ImGui::Text("Crops Farmed Per Hour: %d", final_drop);
         
         imgui_util::change_button_color(color::persian_red(0.6f));
         imgui_util::change_button_hover_color(color::persian_red(1));

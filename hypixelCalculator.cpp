@@ -17,7 +17,7 @@ bool show_best_minion = false;
 bool show_settings = false;
 bool compact_ui = false;
 bool minion_simple_calculation = false;
-
+bool ironman;
 minion_calculation_data minion_calculation_data;
 
 ImVec2 default_button_size = ImVec2(400, 50);
@@ -169,7 +169,8 @@ void render_loop(GLFWwindow *window)
             imgui_util::change_item_spacing(5, 5);
 
             ImGui::Checkbox("UI Compact Mode", &compact_ui);
-            ImGui::SliderInt("Best Minion Display", &best_minion_display_amount, 0, 10);
+            ImGui::Checkbox("Ironman", &ironman);
+            ImGui::SliderInt("Best Minion Display", &best_minion_display_amount, 0, 8);
 
             ImGui::EndListBox();
             ImGui::PopStyleColor();
@@ -278,7 +279,7 @@ void render_loop(GLFWwindow *window)
             }
 
 
-            if (ImGui::Button("Calculate", ImVec2(400, 40)))
+           /* if (ImGui::Button("Calculate", ImVec2(400, 40)))
             {
                 minion_calculator::selected_fuel_id = fuel_ids[minion_calculator::selected_fuel_index];
 
@@ -286,10 +287,9 @@ void render_loop(GLFWwindow *window)
                                                       minion_calculation_data,
                                                       minion_fuel::minion_fuels[minion_calculator::selected_fuel_id],
                                                       minion_calculator::diamond_spreading);
-            }
+            }*/
 
-
-            ImGui::SameLine();
+            
             imgui_util::change_button_color(color::persian_red(0.6f));
             imgui_util::change_button_hover_color(color::persian_red(1));
             if (ImGui::Button("Back to main menu", ImVec2(400, 40)))
@@ -300,10 +300,14 @@ void render_loop(GLFWwindow *window)
 
 
             imgui_util::dummy(0, 5);
-            ImVec2 minion_info_size = ImVec2(1265, 250);
+            ImVec2 minion_info_size = ImVec2(1225, 250);
+            if (best_minion_display_amount > 4)
+            {
+                minion_info_size.x = 1240;
+            }
             if (compact_ui)
             {
-                minion_info_size.y = 375;
+                minion_info_size.y = 315;
             }
             std::vector<std::pair<std::string, double>> minion_profits;
 
@@ -318,28 +322,46 @@ void render_loop(GLFWwindow *window)
 
             // Iterate over all minions to collect profit data
             for (const auto& minion : minion::minions)
-                {
-                double profit = calculation_datas[minion.first].sum_profit_npc;
+            {
+                double profit = calculation_datas[minion.first].sum_profit_bazaar;
+                
+                if (ironman) profit = calculation_datas[minion.first].sum_profit_npc;
+                
                 minion_profits.emplace_back(minion.first, profit);
             }
 
             // Sort the vector by profit (descending order)
-            std::sort(minion_profits.begin(), minion_profits.end(), [](const auto& a, const auto& b) {
+            std::sort(minion_profits.begin(), minion_profits.end(), [](const auto& a, const auto& b)
+            {
                 return a.second > b.second;
             });
 
-            // Display the top 3 minions with highest profit
-            int num_minions_to_display = std::min(static_cast<int>(minion_profits.size()), 3);
-            for (int i = 0; i < num_minions_to_display; ++i) {
-                std::string minion_id = minion_profits[i].first;
-                double profit = minion_profits[i].second;
-    
-                // Display minion info for the current top minion
-                ImGui::BeginListBox("##Minion Info", minion_info_size);
-                ImGui::Text("Minion ID: %s", minion_id.c_str());
-                ImGui::Text("Profit per hour: %f", profit);
+        
+            
+            int num_minions_to_display = std::min(static_cast<int>(minion_profits.size()), best_minion_display_amount);
+            
+            ImGui::BeginListBox("##BEST_MINIONS", minion_info_size);
+            for (int i = 0; i < num_minions_to_display; ++i)
+            {
+                std::string minion_name = "##" + minion::minions[minion_profits[i].first].name;
+                ImGui::BeginListBox(minion_name.c_str(), ImVec2(300, 150));
+                ImGui::Text("%d) Minion: %s", i + 1, minion::minions[minion_profits[i].first].name.c_str());
+                ImGui::Text("Profit per hour (NPC): %f", calculation_datas[minion_profits[i].first].sum_profit_npc);
+                ImGui::Text("Profit per hour (Bazaar): %f", calculation_datas[minion_profits[i].first].sum_profit_bazaar);
+                
+                imgui_util::dummy(0, 5);
+                
+                ImGui::Text("Profit per day (NPC): %f", calculation_datas[minion_profits[i].first].sum_profit_npc * 24);
+                ImGui::Text("Profit per day (Bazaar): %f", calculation_datas[minion_profits[i].first].sum_profit_bazaar * 24);
+                
                 ImGui::EndListBox();
+                if (i != 3)
+                {
+                    ImGui::SameLine();
+                }
+               
             }
+            ImGui::EndListBox();
 
 
             /*if (ImGui::Button("Back to main menu", ImVec2(400, 40)))
