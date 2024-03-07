@@ -19,6 +19,7 @@ add_executable(hypixel_calculator
         imgui/imgui_impl_opengl3.cpp
         imgui/imgui_util.cpp
         src/color.hpp
+        src/settings_data.hpp
 )
 
 

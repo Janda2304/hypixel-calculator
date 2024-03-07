@@ -9,18 +9,22 @@
 #include "minions/minion_calculator.h"
 #include "src/color.hpp"
 #include "src/minion_calculation_data.h"
+#include "src/settings_data.hpp"
 
 bool show_mgs = false;
 bool show_farming = false;
 bool show_minion_profit = false;
 bool show_best_minion = false;
 bool show_settings = false;
-bool compact_ui = false;
+bool best_minion_compact = false;
+bool minion_compact = false;
 bool minion_simple_calculation = false;
 bool ironman;
 minion_calculation_data minion_calculation_data;
 
 ImVec2 default_button_size = ImVec2(400, 50);
+
+settings_data settings_data;
 
 
 /**
@@ -40,6 +44,11 @@ ImVec4 clicked_color = color::black(0.75f);
 
 void imgui_init(GLFWwindow *window)
 {
+    settings_data = settings_data.load();
+    best_minion_display_amount = settings_data.best_minion_display_amount;
+    best_minion_compact = settings_data.best_minion_menu_compact;
+    minion_compact = settings_data.minion_menu_compact;
+    ironman = settings_data.ironman_mode;
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO &io = ImGui::GetIO();
@@ -147,6 +156,7 @@ void render_loop(GLFWwindow *window)
 
             if (ImGui::Button("Exit", default_button_size))
             {
+                settings_data.save();
                 exit(0);
             }
 
@@ -168,9 +178,10 @@ void render_loop(GLFWwindow *window)
             imgui_util::change_frame_background_color(color::black());
             imgui_util::change_item_spacing(5, 5);
 
-            ImGui::Checkbox("UI Compact Mode", &compact_ui);
+            ImGui::Checkbox("Minion Menu Compact Mode", &minion_compact);
+            ImGui::Checkbox("Best Minion Menu Compact Mode", &best_minion_compact);
             ImGui::Checkbox("Ironman", &ironman);
-            ImGui::SliderInt("Best Minion Display", &best_minion_display_amount, 0, 8);
+            ImGui::SliderInt("Best Minion Display", &best_minion_display_amount, 0, 12);
 
             ImGui::EndListBox();
             ImGui::PopStyleColor();
@@ -178,8 +189,14 @@ void render_loop(GLFWwindow *window)
             imgui_util::change_button_color(color::persian_red(0.6f));
             imgui_util::change_button_hover_color(color::persian_red(1));
 
-            if (ImGui::Button("Back to main menu", ImVec2(500, 50)))
+            if (ImGui::Button("Back to main menu (saves settings)", ImVec2(500, 50)))
             {
+                settings_data.best_minion_display_amount = best_minion_display_amount;
+                settings_data.best_minion_menu_compact = best_minion_compact;
+                settings_data.minion_menu_compact = minion_compact;
+                settings_data.ironman_mode = ironman;
+                settings_data.save();
+                
                 show_settings = false;
             }
             ImGui::PopStyleColor();
@@ -245,7 +262,7 @@ void render_loop(GLFWwindow *window)
 
             imgui_util::change_item_spacing(5, 5);
 
-            if (compact_ui)
+            if (best_minion_compact)
             {
                 imgui_util::change_frame_background_color(gray20);
                 ImGui::SameLine();
@@ -257,7 +274,7 @@ void render_loop(GLFWwindow *window)
             ImGui::Checkbox("Simple Calculation", &minion_simple_calculation);
 
 
-            if (compact_ui)
+            if (best_minion_compact)
             {
                 imgui_util::dummy(0, 15);
             }
@@ -273,22 +290,10 @@ void render_loop(GLFWwindow *window)
             ImGui::InputInt("Other Percentage Boosts", &minion_calculator::other_boosts_percentage, 0, 0,
                             ImGuiInputTextFlags_CharsDecimal);
 
-            if (compact_ui)
+            if (best_minion_compact)
             {
                 ImGui::EndListBox();
             }
-
-
-           /* if (ImGui::Button("Calculate", ImVec2(400, 40)))
-            {
-                minion_calculator::selected_fuel_id = fuel_ids[minion_calculator::selected_fuel_index];
-
-                minion_calculator::calc_minion_profit(minion::minions[minion_calculator::selected_minion_id],
-                                                      minion_calculation_data,
-                                                      minion_fuel::minion_fuels[minion_calculator::selected_fuel_id],
-                                                      minion_calculator::diamond_spreading);
-            }*/
-
             
             imgui_util::change_button_color(color::persian_red(0.6f));
             imgui_util::change_button_hover_color(color::persian_red(1));
@@ -300,14 +305,17 @@ void render_loop(GLFWwindow *window)
 
 
             imgui_util::dummy(0, 5);
-            ImVec2 minion_info_size = ImVec2(1225, 250);
+            ImVec2 window_size = ImGui::GetWindowSize();
+            float scaling_factor_x = window_size.x / 1280;
+            
+            ImVec2 minion_info_size = ImVec2(1225 * scaling_factor_x, 250 * scaling_factor_x);
             if (best_minion_display_amount > 4)
             {
-                minion_info_size.x = 1240;
+                minion_info_size.x = 1240 * scaling_factor_x;
             }
-            if (compact_ui)
+            if (best_minion_compact)
             {
-                minion_info_size.y = 315;
+                minion_info_size.y = 315 * scaling_factor_x;
             }
             std::vector<std::pair<std::string, double>> minion_profits;
 
@@ -355,19 +363,31 @@ void render_loop(GLFWwindow *window)
                 ImGui::Text("Profit per day (Bazaar): %f", calculation_datas[minion_profits[i].first].sum_profit_bazaar * 24);
                 
                 ImGui::EndListBox();
-                if (i != 3)
+                if (minion_info_size.x > 1520 && minion_info_size.x < 1820)
                 {
-                    ImGui::SameLine();
+                    if (i % 5 != 4)
+                    {
+                        ImGui::SameLine();
+                    }
                 }
+                else if (minion_info_size.x > 1820)
+                {
+                    if (i % 6 != 5)
+                    {
+                        ImGui::SameLine();
+                    }
+                }
+                else
+                {
+                    if (i % 4 != 3)
+                    {
+                        ImGui::SameLine();
+                    }
+                }
+               
                
             }
             ImGui::EndListBox();
-
-
-            /*if (ImGui::Button("Back to main menu", ImVec2(400, 40)))
-            {
-                show_best_minion = false;
-            }*/
         }
 
         if (show_minion_profit)
@@ -475,7 +495,7 @@ void render_loop(GLFWwindow *window)
             imgui_util::change_item_spacing_y(5);
 
             ImGui::Checkbox("Diamond Spreading", &minion_calculator::diamond_spreading);
-            if (compact_ui)
+            if (minion_compact)
             {
                 ImGui::SameLine();
                 imgui_util::dummy(10, 0);
@@ -491,7 +511,7 @@ void render_loop(GLFWwindow *window)
 
             ImGui::Text("Storage Capacity: %d items", minion_calculator::storage_capacity * 64);
 
-            if (compact_ui)
+            if (minion_compact)
             {
                 ImGui::SameLine();
                 imgui_util::dummy(10, 0);
@@ -526,7 +546,7 @@ void render_loop(GLFWwindow *window)
                 ImGui::Text("DROPS:");
                 for (const auto &drop: minion_calculation_data.minion_drops)
                 {
-                    if (compact_ui) ImGui::BeginListBox("##DROPINFO", ImVec2(270, 95));
+                    if (minion_compact) ImGui::BeginListBox("##DROPINFO", ImVec2(270, 95));
 
                     ImGui::Text("%s : ", item::items[drop.first].name.c_str());
                     ImGui::Text("Production per hour: %f", minion_calculation_data.drops_per_hour[drop.first]);
@@ -534,7 +554,7 @@ void render_loop(GLFWwindow *window)
                     ImGui::Text("Profit per hour (Bazaar): %f",
                                 minion_calculation_data.bazaar_profit_per_hour[drop.first]);
 
-                    if (compact_ui) ImGui::EndListBox();
+                    if (minion_compact) ImGui::EndListBox();
 
                     else imgui_util::dummy(0, 5);
                 }
