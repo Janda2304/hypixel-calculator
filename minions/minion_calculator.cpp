@@ -17,6 +17,7 @@
 
 
 bool minion_calculator::diamond_spreading = false;
+bool minion_calculator::use_bazaar_enchanted_variants = false;
 std::string minion_calculator::selected_minion_id;
 int minion_calculator::selected_minion_index;
 int minion_calculator::storage_capacity = 0;
@@ -29,27 +30,36 @@ std::map<std::string, std::string> minion_calculator::odd_items_ids
 {
     {"SLIME_BALL", "SLIMEBALL"},
     {"RAW_FISH:1", "RAW_SALMON"},
+    {"RAW_FISH-1", "RAW_SALMON"},
     {"CLAY_BALL", "CLAY"},
     {"MITHRIL_ORE", "MITHRIL"},
     {"MYCEL", "MYCELIUM"},
     {"LOG", "OAK_WOOD"},
+    {"RABBIT_FOOT", "RABBIT'S_FOOT"},
     {"LOG:1", "SPRUCE_WOOD"},
     {"LOG:2", "BIRCH_WOOD"},
     {"LOG:3", "JUNGLE_WOOD"},
+    {"LOG-3", "JUNGLE_WOOD"},
     {"LOG_2", "ACACIA_WOOD"},
     {"LOG_2:1", "DARK_OAK_WOOD"},
+    {"LOG_2-1", "DARK_OAK_WOOD"},
     {"SULPHUR", "GUNPOWDER"},
+    {"RABBIT", "RAW_RABBIT"},
     {"RED_ROSE", "FLOWER"},
     {"ENDER_STONE", "END_STONE"},
+    {"INK_SACK:2", "CACTUS_GREEN"},
     {"INK_SACK:3", "COCOA_BEANS"},
     {"INK_SACK:4", "LAPIS_LAZULI"},
     {"CARROT_ITEM", "CARROT"},
     {"POTATO_ITEM", "POTATO"},
     {"CHEESE_FUEL", "TASTY_CHEESE"},
     {"NETHER_STALK", "NETHER_WART"},
+    {"ENCHANTED_NETHER_STALK", "ENCHANTED_NETHER_WART"},
     {"SNOW_BALL", "SNOWBALL"},
     {"RAW_FISH:3", "PUFFERFISH"},
+    {"RAW_FISH-3", "PUFFERFISH"},
     {"RAW_FISH:2", "CLOWNFISH"},
+    {"RAW_FISH-2", "CLOWNFISH"},
     {"SAND:1", "RED_SAND"},
     {"PORK", "RAW_PORKCHOP"},
     {"QUARTZ", "NETHER_QUARTZ"}
@@ -250,14 +260,33 @@ void minion_calculator::calc_minion_profit(minion minion, minion_calculation_dat
         drops_per_hour.insert({item.id, actions_per_hour * drops_per_action * multiplier}); 
         
         profits_per_hour.insert({item.id, drops_per_hour[item.id] * item.sell_price});
+
+        float bazaar_sell_price;
+        if (use_bazaar_enchanted_variants)
+        {
+            if (item.get_enchanted_variant().bazaar_sell_price == 0)
+            {
+                break;
+            }
+            
+            crafting_recipe recipe = crafting_recipe::recipes[item.get_enchanted_variant().id];
+            bazaar_sell_price = item.get_enchanted_variant().bazaar_sell_price / recipe.item_amount;
+        }
+        else
+        {
+            bazaar_sell_price = item.bazaar_sell_price;
+        }
         
-        bazaar_profit_per_hour.insert({item.id, drops_per_hour[item.id] * item.bazaar_sell_price});
+        bazaar_profit_per_hour.insert({item.id, drops_per_hour[item.id] * bazaar_sell_price});
     }
 
 
     float drops_per_hour_sum = 0;
     
-    //TODO: out crafting_recipe_data
+    
+    calculation_data.minion_recipe = crafting_recipe::recipes[minion.id];
+
+  
     
     
     for (const auto &id: drops_per_hour)

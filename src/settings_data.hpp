@@ -7,6 +7,7 @@ struct settings_data
     bool best_minion_menu_compact = false;
     bool minion_menu_compact = false;
     bool ironman_mode = false;
+    bool use_bazaar_enchanted_variants = false;
     int best_minion_display_amount = 0;
 
     void save() const
@@ -34,6 +35,7 @@ struct settings_data
         json_data["minion_menu_compact"] = minion_menu_compact;
         json_data["ironman_mode"] = ironman_mode;
         json_data["best_minion_display_amount"] = best_minion_display_amount;
+        json_data["use_bazaar_enchanted_variants"] = use_bazaar_enchanted_variants;
         return json_data;
     }
 
@@ -44,6 +46,7 @@ struct settings_data
         settings.minion_menu_compact = json_data["minion_menu_compact"];
         settings.ironman_mode = json_data["ironman_mode"];
         settings.best_minion_display_amount = json_data["best_minion_display_amount"];
+        settings.use_bazaar_enchanted_variants = json_data["use_bazaar_enchanted_variants"];
         return settings;
     }
 

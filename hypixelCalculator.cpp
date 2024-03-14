@@ -1,5 +1,6 @@
 ﻿#include <GLFW/glfw3.h>
 
+#include "drop_chance_calculator.h"
 #include "farming.h"
 #include "imgui.h"
 #include "imgui/imgui_impl_glfw.h"
@@ -16,6 +17,7 @@ bool show_farming = false;
 bool show_minion_profit = false;
 bool show_best_minion = false;
 bool show_settings = false;
+bool show_drop_chance = false;
 bool best_minion_compact = false;
 bool minion_compact = false;
 bool minion_simple_calculation = false;
@@ -25,6 +27,8 @@ minion_calculation_data minion_calculation_data;
 ImVec2 default_button_size = ImVec2(400, 50);
 
 settings_data settings_data;
+
+float mult_y = 0;
 
 
 /**
@@ -49,6 +53,7 @@ void imgui_init(GLFWwindow *window)
     best_minion_compact = settings_data.best_minion_menu_compact;
     minion_compact = settings_data.minion_menu_compact;
     ironman = settings_data.ironman_mode;
+    minion_calculator::use_bazaar_enchanted_variants = settings_data.use_bazaar_enchanted_variants;
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO &io = ImGui::GetIO();
@@ -96,8 +101,7 @@ void render_loop(GLFWwindow *window)
         ImGui::SetNextWindowPos(win_pos_offset);
         ImGui::SetNextWindowSize(ImVec2(static_cast<float>(fb_width), static_cast<float>(fb_height)));
 
-        ImGui::Begin("Hypixel Calculator", nullptr,
-                     ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove);
+        ImGui::Begin("Hypixel Calculator", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove);
 
 
         imgui_util::change_text_color(color::white());
@@ -114,21 +118,21 @@ void render_loop(GLFWwindow *window)
         ImGui::PushStyleColor(ImGuiCol_FrameBgActive, clicked_color);
         ImGui::PushStyleColor(ImGuiCol_CheckMark, ImVec4(0, 0.5f, 0, 1.0f));
 
-
-        if (!show_mgs && !show_farming && !show_minion_profit && !show_settings && !show_best_minion)
+        
+        if (!show_mgs && !show_farming && !show_minion_profit && !show_settings && !show_best_minion && !show_drop_chance)
         {
             ImVec2 screenSize = ImGui::GetIO().DisplaySize;
 
-            ImVec2 buttonPos((screenSize.x - default_button_size.x) * 0.5f,
-                             (screenSize.y - default_button_size.y) * 0.3f);
+            
+            ImVec2 buttonPos((screenSize.x - default_button_size.x) * 0.5f, (screenSize.y - default_button_size.y) * 0.25f);
             ImGui::SetCursorPos(buttonPos);
 
             //apply styles
             imgui_util::change_item_spacing_y(10);
 
 
-            ImGui::BeginListBox("##Main Menu", ImVec2(410, 360));
-
+            ImGui::BeginListBox("##Main Menu", ImVec2(410, 420));
+            
             if (ImGui::Button("Calculate MGS (Mining Gear Score)", default_button_size))
             {
                 show_mgs = true;
@@ -147,6 +151,11 @@ void render_loop(GLFWwindow *window)
             if (ImGui::Button("Calculate Best Minion", default_button_size))
             {
                 show_best_minion = true;
+            }
+
+            if (ImGui::Button("Calculate Drop Chances", default_button_size))
+            {
+                show_drop_chance = true;
             }
 
             if (ImGui::Button("Settings", default_button_size))
@@ -170,6 +179,7 @@ void render_loop(GLFWwindow *window)
 
         mining::show_mgs_menu(show_mgs);
         farming::show_farming_menu(show_farming);
+        drop_chance_calculator::show_drop_chance_menu(show_drop_chance);
 
         if (show_settings)
         {
@@ -181,6 +191,7 @@ void render_loop(GLFWwindow *window)
             ImGui::Checkbox("Minion Menu Compact Mode", &minion_compact);
             ImGui::Checkbox("Best Minion Menu Compact Mode", &best_minion_compact);
             ImGui::Checkbox("Ironman", &ironman);
+            ImGui::Checkbox("Use enchanted variants in profit calculations (bazaar only)", &minion_calculator::use_bazaar_enchanted_variants);
             ImGui::SliderInt("Best Minion Display", &best_minion_display_amount, 0, 12);
 
             ImGui::EndListBox();
@@ -195,6 +206,7 @@ void render_loop(GLFWwindow *window)
                 settings_data.best_minion_menu_compact = best_minion_compact;
                 settings_data.minion_menu_compact = minion_compact;
                 settings_data.ironman_mode = ironman;
+                settings_data.use_bazaar_enchanted_variants = minion_calculator::use_bazaar_enchanted_variants;
                 settings_data.save();
                 
                 show_settings = false;
@@ -232,21 +244,17 @@ void render_loop(GLFWwindow *window)
             {
                 // Convert the fuel name to lowercase
                 std::string fuel_name_lowercase = fuel_names[i];
-                std::transform(fuel_name_lowercase.begin(), fuel_name_lowercase.end(), fuel_name_lowercase.begin(),
-                               tolower);
+                std::transform(fuel_name_lowercase.begin(), fuel_name_lowercase.end(), fuel_name_lowercase.begin(), tolower);
 
                 std::string fuel_filter_lowercase = fuel_filter_buffer;
-                std::transform(fuel_filter_lowercase.begin(), fuel_filter_lowercase.end(),
-                               fuel_filter_lowercase.begin(), tolower);
+                std::transform(fuel_filter_lowercase.begin(), fuel_filter_lowercase.end(), fuel_filter_lowercase.begin(), tolower);
 
                 // Apply case insensitive filter
-                if (fuel_filter_lowercase.empty() || fuel_name_lowercase.find(fuel_filter_lowercase) !=
-                    std::string::npos)
+                if (fuel_filter_lowercase.empty() || fuel_name_lowercase.find(fuel_filter_lowercase) != std::string::npos)
                 {
                     bool is_selected = (minion_calculator::selected_fuel_index == static_cast<int>(i));
 
-                    if (ImGui::Selectable(fuel_names[i], is_selected))
-                        minion_calculator::selected_fuel_index = static_cast<int>(i);
+                    if (ImGui::Selectable(fuel_names[i], is_selected)) minion_calculator::selected_fuel_index = static_cast<int>(i);
 
                     if (is_selected) ImGui::SetItemDefaultFocus();
                 }
@@ -287,8 +295,7 @@ void render_loop(GLFWwindow *window)
             ImGui::Text("Storage Capacity: %d items", minion_calculator::storage_capacity * 64);
 
 
-            ImGui::InputInt("Other Percentage Boosts", &minion_calculator::other_boosts_percentage, 0, 0,
-                            ImGuiInputTextFlags_CharsDecimal);
+            ImGui::InputInt("Other Percentage Boosts", &minion_calculator::other_boosts_percentage, 0, 0, ImGuiInputTextFlags_CharsDecimal);
 
             if (best_minion_compact)
             {
@@ -565,7 +572,8 @@ void render_loop(GLFWwindow *window)
                 }
 
                 imgui_util::dummy(0, 10);
-            } else
+            }
+            else
             {
                 ImGui::Text("Sum Profit per hour (NPC): %f", minion_calculation_data.sum_profit_npc);
                 ImGui::Text("Sum Profit per hour (Bazaar): %f", minion_calculation_data.sum_profit_bazaar);
@@ -574,6 +582,13 @@ void render_loop(GLFWwindow *window)
                 ImGui::Text("Sum profit per day (NPC): %f", minion_calculation_data.sum_profit_npc * 24);
                 ImGui::Text("Sum profit per day (Bazaar): %f", minion_calculation_data.sum_profit_bazaar * 24);
             }
+
+            if (minion_calculation_data.minion_recipe != crafting_recipe())
+            {
+                ImGui::Text("Minion Recipe: %s", minion_calculation_data.minion_recipe.get_recipe_string().c_str());
+                ImGui::Text("Return Ratio: %f hours", minion_calculation_data.minion_return_ratio);
+            }
+              
 
             ImGui::EndListBox();
 
@@ -603,7 +618,8 @@ int main()
     minion_calculator::init_minions("../data/minions.json");
     minion_calculator::init_items("../data/items.json");
     minion_calculator::init_recipes("../data/item_recipes.json");
-    minion_calculator::init_recipes("../data/minion_recipes.json");
+    //minion_calculator::init_recipes("../data/minion_recipes.json");
+    minion_calculator::init_recipes("../data/item_recipes_new.json");
     minion_calculator::init_buy_requirements("../data/item_buy_requirements.json");
 
 

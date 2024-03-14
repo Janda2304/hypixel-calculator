@@ -20,6 +20,8 @@ add_executable(hypixel_calculator
         imgui/imgui_util.cpp
         src/color.hpp
         src/settings_data.hpp
+        drop_chance_calculator.cpp
+        drop_chance_calculator.h
 )
 
 

@@ -21,4 +21,9 @@ struct item
     void print_item_info() const;
 
     static std::unordered_map<std::string, item> items;
+
+    /**
+     * returns the enchanted variant of the item (if it exists)
+     */
+    item get_enchanted_variant() const;
 };
