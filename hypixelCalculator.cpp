@@ -2,6 +2,7 @@
 
 #include "drop_chance_calculator.h"
 #include "farming.h"
+#include "helper.hpp"
 #include "imgui.h"
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
@@ -11,6 +12,7 @@
 #include "src/color.hpp"
 #include "src/minion_calculation_data.h"
 #include "src/settings_data.hpp"
+#include "src/style_config.h"
 
 bool show_mgs = false;
 bool show_farming = false;
@@ -30,6 +32,8 @@ settings_data settings_data;
 
 float mult_y = 0;
 
+std::string exe_path = helper::get_exe_path();
+
 
 /**
  * how many minions should be displayed in the best minion menu
@@ -48,7 +52,7 @@ ImVec4 clicked_color = color::black(0.75f);
 
 void imgui_init(GLFWwindow *window)
 {
-    settings_data = settings_data.load();
+    settings_data = settings_data::load("../data/settings.json");
     best_minion_display_amount = settings_data.best_minion_display_amount;
     best_minion_compact = settings_data.best_minion_menu_compact;
     minion_compact = settings_data.minion_menu_compact;
@@ -84,6 +88,10 @@ void render_loop(GLFWwindow *window)
         glfwPollEvents();
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
+        ImGuiStyle &style = ImGui::GetStyle();
+        style_config::load_config("../data/styles.json", style);
+        //style_config::save_config("../data/styles.json", style);
+
         ImGui::NewFrame();
 
         // Get the size of the framebuffer
@@ -103,22 +111,6 @@ void render_loop(GLFWwindow *window)
 
         ImGui::Begin("Hypixel Calculator", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove);
 
-
-        imgui_util::change_text_color(color::white());
-        imgui_util::change_background_color(gray7);
-        imgui_util::change_button_hover_color(gray20);
-        imgui_util::change_button_color(0, 0, 0, 0.5f);
-        imgui_util::change_frame_background_color(0.25f, 0.25f, 0.25f, 0.5f);
-        imgui_util::change_item_rounding(5);
-        imgui_util::change_button_clicked_color(clicked_color);
-
-        imgui_util::change_slider_grab_color(color::green());
-        ImGui::PushStyleColor(ImGuiCol_SliderGrabActive, ImVec4(0, 0.7f, 0, 1.0f));
-        ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, gray20);
-        ImGui::PushStyleColor(ImGuiCol_FrameBgActive, clicked_color);
-        ImGui::PushStyleColor(ImGuiCol_CheckMark, ImVec4(0, 0.5f, 0, 1.0f));
-
-        
         if (!show_mgs && !show_farming && !show_minion_profit && !show_settings && !show_best_minion && !show_drop_chance)
         {
             ImVec2 screenSize = ImGui::GetIO().DisplaySize;
@@ -128,7 +120,7 @@ void render_loop(GLFWwindow *window)
             ImGui::SetCursorPos(buttonPos);
 
             //apply styles
-            imgui_util::change_item_spacing_y(10);
+            //TODO: imgui_util::change_item_spacing_y(10);
 
 
             ImGui::BeginListBox("##Main Menu", ImVec2(410, 420));
@@ -165,7 +157,7 @@ void render_loop(GLFWwindow *window)
 
             if (ImGui::Button("Exit", default_button_size))
             {
-                settings_data.save();
+                settings_data.save(exe_path + "/data/settings.json");
                 exit(0);
             }
 
@@ -174,7 +166,7 @@ void render_loop(GLFWwindow *window)
 
             //reset styles
             ImGui::SetCursorPos(ImVec2(0, 0));
-            imgui_util::reset_item_spacing();
+            //TODO: imgui_util::reset_item_spacing();
         }
 
         mining::show_mgs_menu(show_mgs);
@@ -207,7 +199,7 @@ void render_loop(GLFWwindow *window)
                 settings_data.minion_menu_compact = minion_compact;
                 settings_data.ironman_mode = ironman;
                 settings_data.use_bazaar_enchanted_variants = minion_calculator::use_bazaar_enchanted_variants;
-                settings_data.save();
+                settings_data.save(exe_path + "/data/settings.json");
                 
                 show_settings = false;
             }

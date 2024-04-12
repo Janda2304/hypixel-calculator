@@ -1,7 +1,7 @@
-
-
 #ifndef COLOR_H
 #define COLOR_H
+
+#include <nlohmann/json.hpp>
 
 
 
@@ -10,6 +10,8 @@ struct color
     float r, g, b, a;
     
     color(const float r, const float g, const float b, const float a) : r(r), g(g), b(b), a(a) {}
+
+    explicit color(ImVec4 c) : r(c.x), g(c.y), b(c.z), a(c.w) {}
 
     static color red()
     {
@@ -78,6 +80,21 @@ struct color
     operator ImVec4() const
     {
         return {r, g, b, a};
+    }
+
+    nlohmann::json serialize() const
+    {
+        nlohmann::json json_data;
+        json_data["r"] = r;
+        json_data["g"] = g;
+        json_data["b"] = b;
+        json_data["a"] = a;
+        return json_data;
+    }
+
+    static color deserialize(const nlohmann::json &json_data)
+    {
+        return {json_data["r"], json_data["g"], json_data["b"], json_data["a"]};
     }
     
 };

@@ -22,6 +22,8 @@ add_executable(hypixel_calculator
         src/settings_data.hpp
         drop_chance_calculator.cpp
         drop_chance_calculator.h
+        src/style_config.cpp
+        src/style_config.h
 )
 
 

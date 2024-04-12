@@ -10,18 +10,18 @@ struct settings_data
     bool use_bazaar_enchanted_variants = false;
     int best_minion_display_amount = 0;
 
-    void save() const
+    void save(const std::string& path) const
     {
         nlohmann::json json_data = serialize();
-        std::ofstream file("../data/settings.json");
+        std::ofstream file(path);
         file << json_data.dump(4);
         file.close();
     }
 
-    static settings_data load() 
+    static settings_data load(const std::string& path)
     {
         nlohmann::json json_data;
-        std::ifstream file("../data/settings.json");
+        std::ifstream file(path);
         file >> json_data;
         file.close();
         return deserialize(json_data);
