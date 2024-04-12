@@ -39,7 +39,7 @@ const inline char *to_string(const crop_type e)
 struct crop
 {
     crop_type type;
-    item item;
+    item itm;
     float base_drop;
 };
 

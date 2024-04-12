@@ -1,11 +1,14 @@
 ﻿#pragma once
 #include <array>
-#include <conio.h>
+#include <fstream>
+
 #include <iostream>
 #include <memory>
+#include <imgui.h>
 
 #ifdef _WIN32
 #include <windows.h> // For Windows
+#include <conio.h>
 #else
 #include <cstdlib>   // For Linux and macOS
 #endif
@@ -15,8 +18,10 @@ class helper
 public:
     static void pause()
     {
+#ifdef _WIN32
         std::cout << "Press any key to continue..." << '\n';
         _getch();
+#endif
     }
 
     static void clear()
@@ -42,7 +47,7 @@ public:
     {
         std::array<char, 128> buffer{};
         std::string result;
-        std::shared_ptr<FILE> pipe(_popen(cmd, "r"), _pclose);
+        std::shared_ptr<FILE> pipe(popen(cmd, "r"), pclose);
         if (!pipe)
         {
             throw std::runtime_error("popen() failed!");
@@ -55,6 +60,35 @@ public:
             }
         }
         return result;
+    }
+
+
+
+    static void loadStyleColorsFromConfig(ImGuiStyle& style)
+    {
+        std::map<std::string, ImGuiCol_> style_map =
+        {
+            {"Text", ImGuiCol_Text},
+            {"WindowBg", ImGuiCol_WindowBg},
+            {"Button", ImGuiCol_Button},
+            {"Header", ImGuiCol_Header},
+        };
+        std::ifstream config_file("config.json");
+        nlohmann::json config;
+        config_file >> config;
+
+        for (auto& element : config.items())
+            {
+            const std::string& styleName = element.key();
+            std::vector<float> colorValues = element.value();
+
+            if (style_map.count(styleName) > 0) {
+
+                ImGuiCol_ styleEnum = style_map[styleName];
+                ImVec4 color = ImVec4(colorValues[0], colorValues[1], colorValues[2], colorValues[3]);
+                style.Colors[styleEnum] = color;
+            }
+        }
     }
     
 };

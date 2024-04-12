@@ -22,8 +22,6 @@ bool minion_simple_calculation = false;
 
 
 
-
-
 void imgui_init(GLFWwindow *window)
 {
     IMGUI_CHECKVERSION();
@@ -59,6 +57,16 @@ void render_loop(GLFWwindow *window)
         glfwPollEvents();
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
+        ImGuiStyle &style = ImGui::GetStyle();
+        style.Colors[ImGuiCol_WindowBg] = ImVec4(0.071f, 0.071f, 0.071f, 1.0f);
+        style.Colors[ImGuiCol_Button] = ImVec4(0.0f, 0.0f, 0.0f, 0.5f);
+       /* imgui_util::change_text_color(1, 1, 1, 1);
+        imgui_util::change_background_color(0.071f, 0.071f, 0.071f, 1);
+        imgui_util::change_button_hover_color(0.2f, 0.2f, 0.2f, 0.5f);
+        imgui_util::change_button_color(0, 0, 0, 0.5f);
+        imgui_util::change_frame_background_color(0.25f, 0.25f, 0.25f, 0.5f);
+        imgui_util::change_item_rounding(5);
+        imgui_util::change_button_clicked_color(0,0,0,0.75f);*/
         ImGui::NewFrame();
 
         // Get the size of the framebuffer
@@ -76,13 +84,7 @@ void render_loop(GLFWwindow *window)
         ImGui::SetNextWindowSize(ImVec2(static_cast<float>(fb_width), static_cast<float>(fb_height)));
         ImGui::Begin("Hypixel Calculator", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove);
         
-        imgui_util::change_text_color(1, 1, 1, 1);
-        imgui_util::change_background_color(0.071f, 0.071f, 0.071f, 1);
-        imgui_util::change_button_hover_color(0.2f, 0.2f, 0.2f, 0.5f);
-        imgui_util::change_button_color(0, 0, 0, 0.5f);
-        imgui_util::change_frame_background_color(0.25f, 0.25f, 0.25f, 0.5f);
-        imgui_util::change_item_rounding(5);
-        imgui_util::change_button_clicked_color(0,0,0,0.75f);
+
 
         
 
@@ -94,7 +96,7 @@ void render_loop(GLFWwindow *window)
             ImGui::SetCursorPos(buttonPos);
 
             //apply styles
-            imgui_util::change_item_spacing_y(10);
+           //TODO: imgui_util::change_item_spacing_y(10);
            
             
             ImGui::BeginListBox("##Main Menu", ImVec2(410, 300));
@@ -128,7 +130,7 @@ void render_loop(GLFWwindow *window)
 
             //reset styles
             ImGui::SetCursorPos(ImVec2(0, 0));
-            imgui_util::reset_item_spacing();
+           //TODO: imgui_util::reset_item_spacing();
         }
 
         mining::show_mgs_menu(show_mgs);

@@ -40,8 +40,8 @@ void farming::calculate_crop_profit(crop_type type, float& final_profit, float& 
     crop crop = crop_map()[type];
 
     
-    float sell_price = crop.item.sell_price;
-    float bazaar_sell_price = crop.item.bazaar_sell_price;
+    float sell_price = crop.itm.sell_price;
+    float bazaar_sell_price = crop.itm.bazaar_sell_price;
     
     float drop_amount = crop.base_drop * (1 + (static_cast<float>(farming_fortune) * 0.01f));
 
