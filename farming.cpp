@@ -2,6 +2,7 @@
 
 #include <imgui.h>
 
+#include "helper.hpp"
 #include "imgui/imgui_util.h"
 #include "minions/minion_calculator.h"
 #include "src/color.hpp"
@@ -63,25 +64,28 @@ float final_profit_bazaar;
 int final_drop;
 crop_type type_display;
 
+
+
+
+
+
+
+
 void farming::show_farming_menu(bool &show_farming)
 {
     if (show_farming)
     {
-       
-            
         ImGui::PushItemWidth(200);
         ImGui::InputInt("##Farming Fortune", &farming::farming_fortune, 0, 0, ImGuiInputTextFlags_CharsDecimal);
         ImGui::SameLine();
         ImGui::Text("Farming Fortune: %d", farming::farming_fortune);
-        
-        ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(2, 5));
-   
 
         ImGui::SliderInt("##Crop Break Speed", &farming::crop_break_speed, 1, 20);
         ImGui::SameLine();
         ImGui::Text("Crop Break Speed: %d/s", farming::crop_break_speed);
 
         ImGui::Dummy(ImVec2(0,5));
+
 
         imgui_util::change_item_spacing(4,4);
             
@@ -97,23 +101,24 @@ void farming::show_farming_menu(bool &show_farming)
                 ImGui::SameLine();
             }
         }
-        imgui_util::dummy(0, 5);
-        ImGui::Dummy(ImVec2(0, 5));
+        imgui_util::dummy(0, 10);
             
         ImGui::Text("Current Crop: %s", to_string(type_display));
+
+        std::string profit_str = "Profit per hour: " +  helper::format_numbers(final_profit);
+        std::string profit_bazaar_str = "Profit per hour (Bazaar): " + helper::format_numbers(final_profit_bazaar);
+        std::string drop_str = "Crops farmed per hour: " + helper::format_numbers(final_drop);
             
-        ImGui::Text("Profit Per Hour: %f", final_profit);
-        ImGui::Text("Profit Per Hour (Bazaar): %f", final_profit_bazaar);
-        ImGui::Text("Crops Farmed Per Hour: %d", final_drop);
+        ImGui::Text(profit_str.c_str());
+        ImGui::Text(profit_bazaar_str.c_str());
+        ImGui::Text(drop_str.c_str());
+
         
-        imgui_util::change_button_color(color::persian_red(0.6f));
-        imgui_util::change_button_hover_color(color::persian_red(1));
-        
-        if (ImGui::Button("Back to main menu", ImVec2(250, 50)))
+        if (imgui_util::back_button("Back to main menu", ImVec2(250, 50), 5))
         {
             show_farming = false;
         }
-        ImGui::PopStyleColor();
+        ImGui::PopStyleVar();
     }
 }
 

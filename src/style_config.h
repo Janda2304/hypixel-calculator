@@ -11,6 +11,7 @@
 struct style_config
 {
     static std::map<ImGuiCol, ImVec4> colors;
+    static std::map<ImGuiStyleVar, float> style_vars;
 
 
     static void set_color(ImGuiCol color, ::color value);

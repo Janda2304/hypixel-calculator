@@ -1,6 +1,7 @@
 ﻿#include "mining.h"
 #include <imgui.h>
 
+#include "helper.hpp"
 #include "imgui/imgui_util.h"
 #include "src/color.hpp"
 
@@ -35,28 +36,25 @@ void mining::show_mgs_menu(bool &show_mgs)
         ImGui::SameLine();
         ImGui::Text("Mining Fortune: %d", mining::mining_fortune);
             
-        ImGui::InputFloat("##Pristine", &mining::pristine, 0.0f, 0.0f, "%.3f", ImGuiInputTextFlags_CharsDecimal);
+        ImGui::InputFloat("##Pristine", &mining::pristine, 0.0f, 0.0f, "%.2f", ImGuiInputTextFlags_CharsDecimal);
         ImGui::SameLine();
-        imgui_util::change_item_spacing_y(20);
         ImGui::Text("Pristine: %f", mining::pristine);
-     
-        
-        mining::calculate_mgs(mining::mining_speed, mining::mining_fortune, mining::pristine, final_profit, mgs);
-        imgui_util::reset_item_spacing();
-        ImGui::Text("Your Mining Gear Score (MGS) is: %f", mgs);
-        imgui_util::change_item_spacing_y(10);
-        ImGui::Text("You will make approximately %f coins a hour", final_profit);
 
-        
-        imgui_util::change_button_color(color::persian_red(0.6f));
-        imgui_util::change_button_hover_color(color::persian_red(1));
-        
-        if (ImGui::Button("Back to main menu", ImVec2(250, 50)))
+
+        mining::calculate_mgs(mining::mining_speed, mining::mining_fortune, mining::pristine, final_profit, mgs);
+
+        std::string mgs_text = "Your Mining Gear Score (MGS) is: " + helper::format_numbers(mgs);
+        std::string profit_text = "You will make approximately " + helper::format_numbers(final_profit) + " coins a hour";
+
+        ImGui::Text(mgs_text.c_str());
+        ImGui::Text(profit_text.c_str());
+
+
+        if (imgui_util::back_button("Back to main menu", ImVec2(250, 50), 5))
         {
             show_mgs = false;
         }
-        ImGui::PopStyleColor();
-        
+        ImGui::PopStyleVar();
     }
 }
 

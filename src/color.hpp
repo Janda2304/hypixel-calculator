@@ -43,6 +43,46 @@ struct color
         return {1.0f, 1.0f, 1.0f, a};
     }
 
+
+
+    // primary colors
+    static color moonstone(float a = 1.0f)
+    {
+        return {0.223f, 0.635f, 0.682f, a};
+    }
+
+    static color dark_cyan(float a = 1.0f)
+    {
+        return {0.196f, 0.564f, 0.603f, a};
+    }
+
+    static color jet(float a = 1.0f)
+    {
+        return {0.1764706, 0.1764706, 0.16470589, a};
+    }
+
+    static color ebony(float a = 1.0f)
+    {
+        return {0.3254902, 0.34117648, 0.29803923, a};
+    }
+
+    static color kelp(float a = 1.0f)
+    {
+        return{0.24313726, 0.24705882, 0.22352941, a};
+    }
+
+    static color black_olive(float a = 1.0f)
+    {
+        return{0.21960784, 0.25882354, 0.23137255, a};
+    }
+
+    static color feldgrau(float a = 1.0f)
+    {
+        return {0.24705882, 0.36862746, 0.3529412, a};
+    }
+
+
+
     
     /**
      * 

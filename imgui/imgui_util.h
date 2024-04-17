@@ -39,11 +39,13 @@ public:
     static void change_slider_grab_active_color(ImVec4 color);
     static void change_slider_grab_active_color(float r, float g, float b, float a);
 
-    static void reset_color();
+    static void reset_color(int count = 1);
 
     static void change_item_width(float width);
 
     static bool rounded_button(const char* label, ImVec2 size, float rounding);
+
+    static bool back_button(const char* label, ImVec2 size, float rounding);
 
     static void dummy(ImVec2 size);
     static void dummy(float x, float y);

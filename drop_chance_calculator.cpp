@@ -30,7 +30,7 @@ void drop_chance_calculator::show_drop_chance_menu(bool &show_drop_chance)
         if (default_drop_chance >= 5)
         {
             imgui_util::change_text_color(color::persian_red());
-            ImGui::Text("Warning!\nMagic Find does not affect drops from most Mobs with a higher drop chance than 5%");
+            ImGui::Text("Warning!\nMagic Find does not affect drops from most Mobs with a higher drop chance than 5%%");
             imgui_util::reset_color();
         }
 
@@ -41,12 +41,12 @@ void drop_chance_calculator::show_drop_chance_menu(bool &show_drop_chance)
         ImGui::Text("Item drop chance is: %f", drop_chance);
         ImGui::Text("That also means 1/%d", static_cast<int>(100 / drop_chance));
         
-        
-        imgui_util::change_button_color(color::persian_red(0.6f));
-        imgui_util::change_button_hover_color(color::persian_red(1));
-        if (ImGui::Button("Back to main menu", ImVec2(250, 50)))
+
+        if (imgui_util::back_button("Back to main menu", ImVec2(250, 50), 5))
         {
             show_drop_chance = false;
         }
+
+        ImGui::PopStyleVar();
     }
 }

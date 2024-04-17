@@ -1,4 +1,5 @@
 #include "imgui_util.h"
+#include "../src/color.hpp"
 
 void imgui_util::change_background_color(const ImVec4 color)
 {
@@ -128,14 +129,25 @@ void imgui_util::change_slider_grab_active_color(const float r, const float g, c
     ImGui::PushStyleColor(ImGuiCol_SliderGrabActive, ImVec4(r, g, b, a));
 }
 
-void imgui_util::reset_color()
+void imgui_util::reset_color(int count)
 {
-    ImGui::PopStyleColor();
+    ImGui::PopStyleColor(count);
 }
 
 void imgui_util::change_item_width(const float width)
 {
     ImGui::PushItemWidth(width);
+}
+
+bool imgui_util::back_button(const char *label, ImVec2 size, float rounding = 5)
+{
+    change_button_color(color::persian_red(0.6f));
+    change_button_hover_color(color::persian_red(0.3f));
+    change_button_clicked_color(color::persian_red(0.8f));
+    bool state = rounded_button(label, size, rounding);
+    reset_color(3);
+
+    return state;
 }
 
 

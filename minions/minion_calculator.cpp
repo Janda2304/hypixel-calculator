@@ -205,16 +205,16 @@ void minion_calculator::calc_minion_profit(minion minion, minion_calculation_dat
     }
     minion.storage += storage_boost * 64;
 
+    drop_data diamond;
     if (diamond_spreading && minion.id.find("DIAMOND") == std::string::npos)
     {
         //TODO: rewrite this, diamond spreading works differently (it gives a diamond every 10th item drop not minion action)
-        drop_data diamond;
+
         diamond.item_id = "DIAMOND";
         diamond.drop_chance = 10;
         diamond.drop_rate = 1;
-        diamond.xp_drop.skill = skills::mining;
+        diamond.xp_drop.skill = mining;
         diamond.xp_drop.xp = 0.4f;
-        minion_drops.insert({"DIAMOND", diamond});
     }
     else if (diamond_spreading && minion.id.find("DIAMOND") != std::string::npos)
     {
@@ -257,7 +257,22 @@ void minion_calculator::calc_minion_profit(minion minion, minion_calculation_dat
         drops_per_action = drop.second.drop_rate * (drop.second.drop_chance * 0.01f); 
 
         //how much of this item is generated per hour
-        drops_per_hour.insert({item.id, actions_per_hour * drops_per_action * multiplier}); 
+        drops_per_hour.insert({item.id, actions_per_hour * drops_per_action * multiplier});
+
+
+        float sum_drops_per_hour = 0;
+        for (const auto &id: drops_per_hour)
+        {
+            sum_drops_per_hour += id.second;
+        }
+
+        if (diamond_spreading && minion.id.find("DIAMOND") == std::string::npos)
+        {
+            drops_per_hour["DIAMOND"] = sum_drops_per_hour / 10;
+            profits_per_hour["DIAMOND"] = drops_per_hour["DIAMOND"] * item::items["DIAMOND"].sell_price;
+            bazaar_profit_per_hour["DIAMOND"] = drops_per_hour["DIAMOND"] * item::items["DIAMOND"].bazaar_sell_price;
+            minion_drops.insert({diamond.item_id, diamond});
+        }
         
         profits_per_hour.insert({item.id, drops_per_hour[item.id] * item.sell_price});
 
