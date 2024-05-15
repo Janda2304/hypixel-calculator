@@ -1,5 +1,6 @@
 #ifndef MINION_CALCULATION_DATA_H
 #define MINION_CALCULATION_DATA_H
+#include "crafting_recipe.h"
 #include "drop_data.h"
 #include "fuel_calculation_data.h"
 
@@ -17,6 +18,7 @@ struct minion_calculation_data
     float minion_return_ratio;
     fuel_calculation_data fuel_data;
     std::unordered_map<skills, float> skill_xp_drops;
+    crafting_recipe minion_recipe;
     
 };
 

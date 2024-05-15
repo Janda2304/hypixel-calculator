@@ -1,48 +1,23 @@
 ﻿#pragma once
 #include <array>
-#include <fstream>
-
-#include <iostream>
 #include <memory>
 #include <imgui.h>
+#include <unistd.h>
+#include <nlohmann/json.hpp>
 
-#ifdef _WIN32
-#include <windows.h> // For Windows
-#include <conio.h>
-#else
-#include <cstdlib>   // For Linux and macOS
-#endif
+
+struct myseps : std::numpunct<char>
+{
+    /* use space as separator */
+    char do_thousands_sep() const { return ' '; }
+
+    /* digits are grouped by 3 digits each */
+    std::string do_grouping() const { return "\3"; }
+};
 
 class helper
 {
 public:
-    static void pause()
-    {
-#ifdef _WIN32
-        std::cout << "Press any key to continue..." << '\n';
-        _getch();
-#endif
-    }
-
-    static void clear()
-    {
-#ifdef _WIN32
-        // For Windows
-        COORD topLeft = { 0, 0 };
-        HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
-        CONSOLE_SCREEN_BUFFER_INFO screen;
-        DWORD written;
-
-        GetConsoleScreenBufferInfo(console, &screen);
-        FillConsoleOutputCharacterA(console, ' ', screen.dwSize.X * screen.dwSize.Y, topLeft, &written);
-        FillConsoleOutputAttribute(console, FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_BLUE, screen.dwSize.X * screen.dwSize.Y, topLeft, &written);
-        SetConsoleCursorPosition(console, topLeft);
-#else
-        // For Linux and macOS
-        std::cout << "\x1B[2J\x1B[H";
-#endif
-    }
-
     static std::string exec(const char* cmd)
     {
         std::array<char, 128> buffer{};
@@ -62,33 +37,28 @@ public:
         return result;
     }
 
-
-
-    static void loadStyleColorsFromConfig(ImGuiStyle& style)
+    static std::string get_exe_path()
     {
-        std::map<std::string, ImGuiCol_> style_map =
-        {
-            {"Text", ImGuiCol_Text},
-            {"WindowBg", ImGuiCol_WindowBg},
-            {"Button", ImGuiCol_Button},
-            {"Header", ImGuiCol_Header},
-        };
-        std::ifstream config_file("config.json");
-        nlohmann::json config;
-        config_file >> config;
-
-        for (auto& element : config.items())
-            {
-            const std::string& styleName = element.key();
-            std::vector<float> colorValues = element.value();
-
-            if (style_map.count(styleName) > 0) {
-
-                ImGuiCol_ styleEnum = style_map[styleName];
-                ImVec4 color = ImVec4(colorValues[0], colorValues[1], colorValues[2], colorValues[3]);
-                style.Colors[styleEnum] = color;
-            }
-        }
+        char result[1024];
+        ssize_t count = readlink("/proc/self/exe", result, 1024);
+        return std::string(result, (count > 0) ? count : 0);
     }
-    
+
+    static std::string format_numbers(int value)
+    {
+        std::stringstream ss;
+        ss.imbue(std::locale(std::locale(), new myseps));
+        ss << std::fixed << value;
+        return ss.str();
+    }
+
+    static std::string format_numbers(float value)
+    {
+        std::stringstream ss;
+        ss.imbue(std::locale(std::locale(), new myseps));
+        ss << std::fixed << value;
+        return ss.str();
+    }
 };
+
+

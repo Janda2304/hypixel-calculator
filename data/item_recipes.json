@@ -446,7 +446,7 @@
   },
   {
     "craft_id": "ENCHANTED_BIRCH_LOG",
-    "item_id": "LOG-2",
+    "item_id": "BIRCH_WOOD",
     "item_amount": 160
   },
   {
@@ -488,5 +488,26 @@
     "craft_id": "ENCHANTED_SNOW_BLOCK",
     "item_id": "SNOW_BLOCK",
     "item_amount": 160
+  },
+  {
+    "craft_id": "ENCHANTED_EGG",
+    "item_id": "EGG",
+    "item_amount": 144
+  },
+  {
+    "craft_id": "ENCHANTED_FEATHER",
+    "item_id": "FEATHER",
+    "item_amount": 160
+  },
+  {
+    "craft_id": "ENCHANTED_SPONGE",
+    "item_id": "SPONGE",
+    "item_amount": 40
+
+  },
+  {
+    "craft_id": "ENCHANTED_PRISMARINE_SHARD",
+    "item_id": "PRISMARINE_SHARD",
+    "item_amount":80
   }
 ]

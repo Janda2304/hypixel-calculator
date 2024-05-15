@@ -12,6 +12,10 @@ class minion_calculator
 public:
 
     static bool diamond_spreading;
+    /**
+     * if the calculator should use enchanted variants of the items for the bazaar price calculation
+     */
+    static bool use_bazaar_enchanted_variants;
     static int storage_capacity;
     
     static std::string selected_minion_id;

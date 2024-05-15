@@ -2452,7 +2452,7 @@
     "base_production_rate": 27,
     "drops": [
       {
-        "item_id": "CACTUS",
+        "item_id": "CACTUS_GREEN",
         "drop_rate": 3,
         "drop_chance": 100,
         "xp_per_item": {
@@ -2471,7 +2471,7 @@
     "base_production_rate": 27,
     "drops": [
       {
-        "item_id": "CACTUS",
+        "item_id": "CACTUS_GREEN",
         "drop_rate": 3,
         "drop_chance": 100,
         "xp_per_item": {
@@ -2490,7 +2490,7 @@
     "base_production_rate": 25,
     "drops": [
       {
-        "item_id": "CACTUS",
+        "item_id": "CACTUS_GREEN",
         "drop_rate": 3,
         "drop_chance": 100,
         "xp_per_item": {
@@ -2509,7 +2509,7 @@
     "base_production_rate": 25,
     "drops": [
       {
-        "item_id": "CACTUS",
+        "item_id": "CACTUS_GREEN",
         "drop_rate": 3,
         "drop_chance": 100,
         "xp_per_item": {
@@ -2528,7 +2528,7 @@
     "base_production_rate": 23,
     "drops": [
       {
-        "item_id": "CACTUS",
+        "item_id": "CACTUS_GREEN",
         "drop_rate": 3,
         "drop_chance": 100,
         "xp_per_item": {
@@ -2547,7 +2547,7 @@
     "base_production_rate": 23,
     "drops": [
       {
-        "item_id": "CACTUS",
+        "item_id": "CACTUS_GREEN",
         "drop_rate": 3,
         "drop_chance": 100,
         "xp_per_item": {
@@ -2566,7 +2566,7 @@
     "base_production_rate": 21,
     "drops": [
       {
-        "item_id": "CACTUS",
+        "item_id": "CACTUS_GREEN",
         "drop_rate": 3,
         "drop_chance": 100,
         "xp_per_item": {
@@ -2585,7 +2585,7 @@
     "base_production_rate": 21,
     "drops": [
       {
-        "item_id": "CACTUS",
+        "item_id": "CACTUS_GREEN",
         "drop_rate": 3,
         "drop_chance": 100,
         "xp_per_item": {
@@ -2604,7 +2604,7 @@
     "base_production_rate": 18,
     "drops": [
       {
-        "item_id": "CACTUS",
+        "item_id": "CACTUS_GREEN",
         "drop_rate": 3,
         "drop_chance": 100,
         "xp_per_item": {
@@ -2623,7 +2623,7 @@
     "base_production_rate": 18,
     "drops": [
       {
-        "item_id": "CACTUS",
+        "item_id": "CACTUS_GREEN",
         "drop_rate": 3,
         "drop_chance": 100,
         "xp_per_item": {
@@ -2642,7 +2642,7 @@
     "base_production_rate": 15,
     "drops": [
       {
-        "item_id": "CACTUS",
+        "item_id": "CACTUS_GREEN",
         "drop_rate": 3,
         "drop_chance": 100,
         "xp_per_item": {
@@ -2661,7 +2661,7 @@
     "base_production_rate": 12,
     "drops": [
       {
-        "item_id": "CACTUS",
+        "item_id": "CACTUS_GREEN",
         "drop_rate": 3,
         "drop_chance": 100,
         "xp_per_item": {

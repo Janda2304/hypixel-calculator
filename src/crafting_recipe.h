@@ -14,7 +14,22 @@ struct crafting_recipe
 
     void print_recipe() const;
 
+    std::string get_recipe_string() const;
+
     void print_recipe_short() const;
 
     static std::map<std::string, crafting_recipe> recipes;
+
+    
+    friend bool operator==(const crafting_recipe& lhs, const crafting_recipe& rhs)
+    {
+        return lhs.craft_id == rhs.craft_id &&
+               lhs.item_id == rhs.item_id &&
+               lhs.item_amount == rhs.item_amount;
+    }
+
+    friend bool operator!=(const crafting_recipe& lhs, const crafting_recipe& rhs)
+    {
+        return !(lhs == rhs);
+    }
 };

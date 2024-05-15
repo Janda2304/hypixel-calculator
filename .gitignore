@@ -36,3 +36,8 @@
 cmake-build-debug/
 cmake-build-release/
 
+# app config files
+data/settings.json
+data/styles.json
+
+

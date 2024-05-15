@@ -1,5 +1,6 @@
 ﻿#include "item.h"
 
+#include "crafting_recipe.h"
 #include "../minions/minion_calculator.h"
 
 
@@ -35,7 +36,7 @@ item item::deserialize(const nlohmann::json& json_data, nlohmann::json& bazaar_d
         item.bazaar_sell_price = bazaar_sell_price;
     }
     
-    for (auto element : minion_calculator::odd_items_ids)
+    for (const auto& element : minion_calculator::odd_items_ids)
     {
         if (item.id == element.first)
         {
@@ -52,4 +53,19 @@ void item::print_item_info() const
     std::cout << "id: " << id << '\n';
     std::cout << "sell price: " << sell_price << '\n';
     std::cout << "bazaar sell price: " << bazaar_sell_price << '\n';
+}
+
+
+
+item item::get_enchanted_variant() const
+{
+    for (const auto& recipe: crafting_recipe::recipes)
+    {
+        if (recipe.second.item_id == id && recipe.second.craft_id.find("ENCHANTED") != std::string::npos)
+        {
+            //std::cout << items[recipe.second.craft_id].name << std::endl;
+            return items[recipe.second.craft_id];
+        }
+    }
+    return {};
 }
