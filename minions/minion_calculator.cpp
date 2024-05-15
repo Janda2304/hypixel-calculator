@@ -62,7 +62,8 @@ std::map<std::string, std::string> minion_calculator::odd_items_ids
     {"RAW_FISH-2", "CLOWNFISH"},
     {"SAND:1", "RED_SAND"},
     {"PORK", "RAW_PORKCHOP"},
-    {"QUARTZ", "NETHER_QUARTZ"}
+    {"QUARTZ", "NETHER_QUARTZ"},
+    {"SNOWBALL", "SNOW_BALL"}
 };
 
 
