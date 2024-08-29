@@ -3,6 +3,7 @@
 #include <fstream>
 #include <iostream>
 #include <nlohmann/json.hpp>
+#include <imgui.h>  // Ensure this header is included if it's not already
 
 std::map<ImGuiCol, ImVec4> style_config::colors;
 std::map<ImGuiStyleVar, float> style_config::style_vars;
@@ -20,9 +21,9 @@ void style_config::load_config(const std::string &path, ImGuiStyle& style)
         style.Colors[element.first] = element.second;
     }
 
-    for (auto style_pair: style_vars)
+    for (const auto& style_pair : style_vars)
     {
-       ImGui::PushStyleVar(style_pair.first, style_pair.second);
+        ImGui::PushStyleVar(style_pair.first, style_pair.second);
     }
 }
 
@@ -42,48 +43,63 @@ void style_config::serialize(const std::string &path)
     nlohmann::json json_colors;
     nlohmann::json json_style_vars;
 
-    for (const auto& [key, value] : colors)
+    for (auto it = colors.begin(); it != colors.end(); ++it)
     {
-        color c(value);
-        json_colors[std::to_string(key)] = c.serialize();
+        color c(it->second);
+        json_colors[std::to_string(it->first)] = c.serialize();
     }
 
-    for (auto vars: style_vars)
+    for (auto it = style_vars.begin(); it != style_vars.end(); ++it)
     {
-        json_style_vars[std::to_string(vars.first)] = vars.second;
+        json_style_vars[std::to_string(it->first)] = it->second;
     }
 
     json_data["colors"] = json_colors;
     json_data["style_vars"] = json_style_vars;
 
-    std::ofstream file (path);
-    file << json_data.dump(4);
-    file.close();
+    std::ofstream file(path);
+    if (file.is_open())
+    {
+        file << json_data.dump(4);
+        file.close();
+    }
+    else
+    {
+        std::cerr << "Unable to open file for writing: " << path << std::endl;
+    }
 }
 
 void style_config::deserialize(const std::string &path)
 {
     nlohmann::json json_data;
     std::ifstream file(path);
-    file >> json_data;
-    file.close();
+    if (file.is_open())
+    {
+        file >> json_data;
+        file.close();
 
-    // Deserialize colors
-    if (json_data.contains("colors"))
+        // Deserialize colors
+        if (json_data.contains("colors"))
         {
-        nlohmann::json json_colors = json_data["colors"];
-        for (const auto& [key, value] : json_colors.items())
+            nlohmann::json json_colors = json_data["colors"];
+            for (auto it = json_colors.items().begin(); it != json_colors.items().end(); ++it)
+            {
+                colors.insert_or_assign(static_cast<ImGuiCol>(std::stoi(it.key())), color::deserialize(it.value()));
+            }
+        }
+
+        // Deserialize style_vars
+        if (json_data.contains("style_vars"))
         {
-            colors.insert_or_assign(static_cast<ImGuiCol>(std::stoi(key)), color::deserialize(value));
+            nlohmann::json json_style_vars = json_data["style_vars"];
+            for (auto it = json_style_vars.items().begin(); it != json_style_vars.items().end(); ++it)
+            {
+                style_vars.insert_or_assign(static_cast<ImGuiStyleVar>(std::stoi(it.key())), it.value().get<float>());
+            }
         }
     }
-
-    // Deserialize style_vars
-    if (json_data.contains("style_vars")) {
-        nlohmann::json json_style_vars = json_data["style_vars"];
-        for (const auto& [key, value] : json_style_vars.items())
-        {
-            style_vars.insert_or_assign(static_cast<ImGuiStyleVar>(std::stoi(key)), value.get<float>());
-        }
+    else
+    {
+        std::cerr << "Unable to open file for reading: " << path << std::endl;
     }
 }

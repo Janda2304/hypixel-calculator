@@ -2,7 +2,7 @@
 
 #include <imgui.h>
 
-#include "imgui/imgui_util.h"
+#include <imgui_util.h>
 #include "src/color.hpp"
 
 
@@ -34,7 +34,7 @@ void drop_chance_calculator::show_drop_chance_menu(bool &show_drop_chance)
             imgui_util::reset_color();
         }
 
-        if (pet_calculation) drop_chance = default_drop_chance * (1 + (magic_find + pet_luck / 100));
+        if (pet_calculation) drop_chance = default_drop_chance * (1 + magic_find /100 + pet_luck / 100);
         
         else drop_chance = default_drop_chance * (1 + (magic_find / 100));
 

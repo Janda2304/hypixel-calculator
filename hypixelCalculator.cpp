@@ -1,13 +1,13 @@
-﻿#include <GLFW/glfw3.h>
+﻿#include <glfw3.h>
 
 #include "drop_chance_calculator.h"
 #include "farming.h"
 #include "helper.hpp"
 #include "imgui.h"
-#include "imgui/imgui_impl_glfw.h"
-#include "imgui/imgui_impl_opengl3.h"
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
 #include "mining.h"
-#include "imgui/imgui_util.h"
+#include <imgui_util.h>
 #include "minions/minion_calculator.h"
 #include "src/color.hpp"
 #include "src/minion_calculation_data.h"
@@ -20,8 +20,7 @@ bool show_minion_profit = false;
 bool show_best_minion = false;
 bool show_settings = false;
 bool show_drop_chance = false;
-bool best_minion_compact = false;
-bool minion_compact = false;
+bool compact_mode = false;
 bool minion_simple_calculation = false;
 bool ironman;
 minion_calculation_data minion_calculation_data;
@@ -54,8 +53,7 @@ void imgui_init(GLFWwindow *window)
 {
     settings_data = settings_data::load("../data/settings.json");
     best_minion_display_amount = settings_data.best_minion_display_amount;
-    best_minion_compact = settings_data.best_minion_menu_compact;
-    minion_compact = settings_data.minion_menu_compact;
+    compact_mode = settings_data.compact_ui;
     ironman = settings_data.ironman_mode;
     minion_calculator::use_bazaar_enchanted_variants = settings_data.use_bazaar_enchanted_variants;
     IMGUI_CHECKVERSION();
@@ -134,43 +132,46 @@ void render_loop(GLFWwindow *window)
 
             ImGui::PushStyleColor(ImGuiCol_FrameBg, color::transparent());
             ImGui::BeginListBox("##Main Menu", ImVec2(405, 50 * 7 + (5 * 7)));
-            ImGui::PopStyleColor();
+            {
+                ImGui::PopStyleColor();
             
-            if (ImGui::Button("Calculate MGS (Mining Gear Score)", default_button_size))
-            {
-                show_mgs = true;
-            }
+                if (ImGui::Button("Calculate MGS (Mining Gear Score)", default_button_size))
+                {
+                    show_mgs = true;
+                }
 
-            if (ImGui::Button("Calculate Farming Profits", default_button_size))
-            {
-                show_farming = true;
-            }
+                if (ImGui::Button("Calculate Farming Profits", default_button_size))
+                {
+                    show_farming = true;
+                }
 
-            if (ImGui::Button("Calculate Minion Profit", default_button_size))
-            {
-                show_minion_profit = true;
-            }
+                if (ImGui::Button("Calculate Minion Profit", default_button_size))
+                {
+                    show_minion_profit = true;
+                }
 
-            if (ImGui::Button("Calculate Best Minion", default_button_size))
-            {
-                show_best_minion = true;
-            }
+                if (ImGui::Button("Calculate Best Minion", default_button_size))
+                {
+                    show_best_minion = true;
+                }
 
-            if (ImGui::Button("Calculate Drop Chances", default_button_size))
-            {
-                show_drop_chance = true;
-            }
+                if (ImGui::Button("Calculate Drop Chances", default_button_size))
+                {
+                    show_drop_chance = true;
+                }
 
-            if (ImGui::Button("Settings", default_button_size))
-            {
-                show_settings = true;
-            }
+                if (ImGui::Button("Settings", default_button_size))
+                {
+                    show_settings = true;
+                }
 
-            if (ImGui::Button("Exit", default_button_size))
-            {
-                settings_data.save("../data/settings.json");
-                exit(0);
+                if (ImGui::Button("Exit", default_button_size))
+                {
+                    settings_data.save("../data/settings.json");
+                    exit(0);
+                }
             }
+            
 
             ImGui::EndListBox();
 
@@ -190,8 +191,7 @@ void render_loop(GLFWwindow *window)
             imgui_util::change_frame_background_color(color::black());
             imgui_util::change_item_spacing(5, 5);
 
-            ImGui::Checkbox("Minion Menu Compact Mode", &minion_compact);
-            ImGui::Checkbox("Best Minion Menu Compact Mode", &best_minion_compact);
+            ImGui::Checkbox("Compact UI", &compact_mode);
             ImGui::Checkbox("Ironman", &ironman);
             ImGui::Checkbox("Use enchanted variants in profit calculations (bazaar only)", &minion_calculator::use_bazaar_enchanted_variants);
             ImGui::SliderInt("Best Minion Display", &best_minion_display_amount, 0, 12);
@@ -202,8 +202,7 @@ void render_loop(GLFWwindow *window)
             if (imgui_util::back_button("Back to main menu (saves settings)", ImVec2(500, 50), 5))
             {
                 settings_data.best_minion_display_amount = best_minion_display_amount;
-                settings_data.best_minion_menu_compact = best_minion_compact;
-                settings_data.minion_menu_compact = minion_compact;
+                settings_data.compact_ui = compact_mode;
                 settings_data.ironman_mode = ironman;
                 settings_data.use_bazaar_enchanted_variants = minion_calculator::use_bazaar_enchanted_variants;
                 settings_data.save("../data/settings.json");
@@ -252,7 +251,7 @@ void render_loop(GLFWwindow *window)
                 std::string fuel_filter_lowercase = fuel_filter_buffer;
                 std::transform(fuel_filter_lowercase.begin(), fuel_filter_lowercase.end(), fuel_filter_lowercase.begin(), tolower);
 
-                // Apply case insensitive filter
+                // Apply case-insensitive filter
                 if (fuel_filter_lowercase.empty() || fuel_name_lowercase.find(fuel_filter_lowercase) != std::string::npos)
                 {
                     bool is_selected = (minion_calculator::selected_fuel_index == static_cast<int>(i));
@@ -275,10 +274,11 @@ void render_loop(GLFWwindow *window)
             ImGui::PopStyleVar();
             imgui_util::change_item_spacing(5, 5);
 
-            if (best_minion_compact)
+            if (compact_mode)
             {
                 imgui_util::change_frame_background_color(gray20);
                 ImGui::SameLine();
+                //TODO: check ListBox with if statement
                 ImGui::BeginListBox("##CHECKMARK_GROUP", ImVec2(325, 140));
                 ImGui::PopStyleColor();
             }
@@ -286,7 +286,7 @@ void render_loop(GLFWwindow *window)
             ImGui::Checkbox("Diamond Spreading", &minion_calculator::diamond_spreading);
 
 
-            if (best_minion_compact)
+            if (compact_mode)
             {
                 imgui_util::dummy(0, 15);
             }
@@ -301,7 +301,7 @@ void render_loop(GLFWwindow *window)
 
             ImGui::InputInt("Other Percentage Boosts", &minion_calculator::other_boosts_percentage, 0, 0, ImGuiInputTextFlags_CharsDecimal);
 
-            if (best_minion_compact)
+            if (compact_mode)
             {
                 ImGui::EndListBox();
             }
@@ -322,7 +322,7 @@ void render_loop(GLFWwindow *window)
             {
                 minion_info_size.x = 1240 * scaling_factor_x;
             }*/
-            if (best_minion_compact)
+            if (compact_mode)
             {
                 minion_info_size.y = 400 * scaling_factor_y;
             }
@@ -358,25 +358,27 @@ void render_loop(GLFWwindow *window)
             
             int num_minions_to_display = std::min(static_cast<int>(minion_profits.size()), best_minion_display_amount);
 
-            ImGui::BeginListBox("##BEST_MINIONS", minion_info_size);
-            ImGui::PushStyleColor(ImGuiCol_FrameBg, color::feldgrau());
-            for (int i = 0; i < num_minions_to_display; ++i)
+            if(ImGui::BeginListBox("##BEST_MINIONS", minion_info_size))
             {
+                ImGui::PushStyleColor(ImGuiCol_FrameBg, color::feldgrau());
+                for (int i = 0; i < num_minions_to_display; ++i)
+                {
                 std::string minion_name = "##" + minion::minions[minion_profits[i].first].name;
-                ImGui::BeginListBox(minion_name.c_str(), ImVec2(300, 150));
-
-                std::string profit_npc_formatted = "Profit per hour (NPC): " + helper::format_numbers(calculation_datas[minion_profits[i].first].sum_profit_npc);
-                std::string profit_bazaar_formatted = "Profit per hour (Bazaar): " + helper::format_numbers(calculation_datas[minion_profits[i].first].sum_profit_bazaar);
-                std::string profit_per_day_npc_formatted = "Profit per day (NPC): " + helper::format_numbers(calculation_datas[minion_profits[i].first].sum_profit_npc * 24);
-                std::string profit_per_day_bazaar_formatted = "Profit per day (Bazaar): " + helper::format_numbers(calculation_datas[minion_profits[i].first].sum_profit_bazaar * 24);
-                ImGui::Text("%d) Minion: %s", i + 1, minion::minions[minion_profits[i].first].name.c_str());
-                ImGui::Text(profit_npc_formatted.c_str());
-                ImGui::Text(profit_bazaar_formatted.c_str());
+                if(ImGui::BeginListBox(minion_name.c_str(), ImVec2(300, 150)))
+                {
+                    std::string profit_npc_formatted = "Profit per hour (NPC): " + helper::format_numbers(calculation_datas[minion_profits[i].first].sum_profit_npc);
+                    std::string profit_bazaar_formatted = "Profit per hour (Bazaar): " + helper::format_numbers(calculation_datas[minion_profits[i].first].sum_profit_bazaar);
+                    std::string profit_per_day_npc_formatted = "Profit per day (NPC): " + helper::format_numbers(calculation_datas[minion_profits[i].first].sum_profit_npc * 24);
+                    std::string profit_per_day_bazaar_formatted = "Profit per day (Bazaar): " + helper::format_numbers(calculation_datas[minion_profits[i].first].sum_profit_bazaar * 24);
+                    ImGui::Text("%d) Minion: %s", i + 1, minion::minions[minion_profits[i].first].name.c_str());
+                    ImGui::Text(profit_npc_formatted.c_str());
+                    ImGui::Text(profit_bazaar_formatted.c_str());
                 
-                imgui_util::dummy(0, 5);
+                    imgui_util::dummy(0, 5);
                 
-                ImGui::Text(profit_per_day_npc_formatted.c_str());
-                ImGui::Text(profit_per_day_bazaar_formatted.c_str());
+                    ImGui::Text(profit_per_day_npc_formatted.c_str());
+                    ImGui::Text(profit_per_day_bazaar_formatted.c_str());
+                }
                 
                 ImGui::EndListBox();
                 if (minion_info_size.x > 1520 && minion_info_size.x < 1820)
@@ -432,6 +434,8 @@ void render_loop(GLFWwindow *window)
                
                
             }
+            }
+            
             ImGui::EndListBox();
             ImGui::PopStyleVar();
             ImGui::PopStyleColor();
@@ -463,85 +467,86 @@ void render_loop(GLFWwindow *window)
             static char fuel_filter_buffer[256] = "";
 
 
-            ImGui::BeginListBox("##Minion Selection", ImVec2(305, 230));
-
-            imgui_util::change_item_width(300);
-            imgui_util::change_item_spacing_y(5);
-
-
-            ImGui::InputText("##Search Minions", minion_filter_buffer, IM_ARRAYSIZE(minion_filter_buffer));
-            ImGui::BeginListBox("##Minions");
-
-
-            for (size_t i = 0; i < minion_names.size(); ++i)
+            if(ImGui::BeginListBox("##Minion Selection", ImVec2(305, 230)))
             {
-                if (minion_filter_buffer[0] == '\0' || strstr(minion_names[i], minion_filter_buffer) != nullptr)
-                // Apply filter
+                imgui_util::change_item_width(300);
+                imgui_util::change_item_spacing_y(5);
+
+
+                ImGui::InputText("##Search Minions", minion_filter_buffer, IM_ARRAYSIZE(minion_filter_buffer));
+                if ( ImGui::BeginListBox("##Minions"))
                 {
-                    bool is_selected = (minion_calculator::selected_minion_index == static_cast<int>(i));
+                    for (size_t i = 0; i < minion_names.size(); ++i)
+                    {
+                        if (minion_filter_buffer[0] == '\0' || strstr(minion_names[i], minion_filter_buffer) != nullptr)
+                            // Apply filter
+                        {
+                            bool is_selected = (minion_calculator::selected_minion_index == static_cast<int>(i));
 
-                    if (ImGui::Selectable(minion_names[i], is_selected))
-                        minion_calculator::selected_minion_index = static_cast<int>(i);
+                            if (ImGui::Selectable(minion_names[i], is_selected))
+                                minion_calculator::selected_minion_index = static_cast<int>(i);
 
-                    if (is_selected) ImGui::SetItemDefaultFocus();
+                            if (is_selected) ImGui::SetItemDefaultFocus();
+                        }
+                    }
+                    ImGui::EndListBox();
                 }
+            
+               
+
+                ImGui::Text("Current Minion: %s", minion_names[minion_calculator::selected_minion_index]);
+                ImGui::EndListBox();
+                ImGui::PopStyleVar();
             }
-
-
-            ImGui::EndListBox();
-
-            ImGui::Text("Current Minion: %s", minion_names[minion_calculator::selected_minion_index]);
-            ImGui::EndListBox();
-            ImGui::PopStyleVar();
+          
 
             imgui_util::change_item_spacing(10, 5);
             ImGui::SameLine();
 
 
-            ImGui::BeginListBox("##Fuel Selection", ImVec2(305, 230));
-
-            imgui_util::change_item_width(300);
-
-
-            ImGui::InputText("Search Fuels", fuel_filter_buffer, IM_ARRAYSIZE(fuel_filter_buffer));
-            ImGui::BeginListBox("##Fuels");
-
-
-            for (size_t i = 0; i < fuel_names.size(); ++i)
+            if(ImGui::BeginListBox("##Fuel Selection", ImVec2(305, 230)))
             {
-                // Convert the fuel name to lowercase
-                std::string fuel_name_lowercase = fuel_names[i];
-                std::transform(fuel_name_lowercase.begin(), fuel_name_lowercase.end(), fuel_name_lowercase.begin(),
-                               tolower);
+                imgui_util::change_item_width(300);
 
-                std::string fuel_filter_lowercase = fuel_filter_buffer;
-                std::transform(fuel_filter_lowercase.begin(), fuel_filter_lowercase.end(),
-                               fuel_filter_lowercase.begin(), tolower);
 
-                // Apply case insensitive filter
-                if (fuel_filter_lowercase.empty() || fuel_name_lowercase.find(fuel_filter_lowercase) !=
-                    std::string::npos)
+                ImGui::InputText("Search Fuels", fuel_filter_buffer, IM_ARRAYSIZE(fuel_filter_buffer));
+                if (ImGui::BeginListBox("##Fuels"))
                 {
-                    bool is_selected = (minion_calculator::selected_fuel_index == static_cast<int>(i));
+                    for (size_t i = 0; i < fuel_names.size(); ++i)
+                    {
+                        // Convert the fuel name to lowercase
+                        std::string fuel_name_lowercase = fuel_names[i];
+                        std::transform(fuel_name_lowercase.begin(), fuel_name_lowercase.end(), fuel_name_lowercase.begin(),
+                                       tolower);
 
-                    if (ImGui::Selectable(fuel_names[i], is_selected))
-                        minion_calculator::selected_fuel_index = static_cast<int>(i);
+                        std::string fuel_filter_lowercase = fuel_filter_buffer;
+                        std::transform(fuel_filter_lowercase.begin(), fuel_filter_lowercase.end(),
+                                       fuel_filter_lowercase.begin(), tolower);
 
-                    if (is_selected) ImGui::SetItemDefaultFocus();
+                        // Apply case insensitive filter
+                        if (fuel_filter_lowercase.empty() || fuel_name_lowercase.find(fuel_filter_lowercase) !=
+                            std::string::npos)
+                        {
+                            bool is_selected = (minion_calculator::selected_fuel_index == static_cast<int>(i));
+
+                            if (ImGui::Selectable(fuel_names[i], is_selected))
+                                minion_calculator::selected_fuel_index = static_cast<int>(i);
+
+                            if (is_selected) ImGui::SetItemDefaultFocus();
+                        }
+                    }
+                    ImGui::EndListBox();
                 }
+                ImGui::Text("Current Fuel: %s", fuel_names[minion_calculator::selected_fuel_index]);
+                ImGui::EndListBox();
             }
-
-
-            ImGui::EndListBox();
-
-            ImGui::Text("Current Fuel: %s", fuel_names[minion_calculator::selected_fuel_index]);
-            ImGui::EndListBox();
+        
 
 
             imgui_util::dummy(0, 10);
 
             ImGui::Checkbox("Diamond Spreading", &minion_calculator::diamond_spreading);
-            if (minion_compact)
+            if (compact_mode)
             {
                 ImGui::SameLine();
                 imgui_util::dummy(10, 0);
@@ -557,7 +562,7 @@ void render_loop(GLFWwindow *window)
 
             ImGui::Text("Storage Capacity: %d items", minion_calculator::storage_capacity * 64);
 
-            if (minion_compact)
+            if (compact_mode)
             {
                 ImGui::SameLine();
                 imgui_util::dummy(10, 0);
@@ -581,18 +586,17 @@ void render_loop(GLFWwindow *window)
 
 
             imgui_util::dummy(0, 5);
-            ImGui::BeginListBox("##Minion Info", ImVec2(400, 200));
-
-
-            ImGui::Text("Minion Production Rate: %f s", minion_calculation_data.minion_production_rate);
-            ImGui::Dummy(ImVec2(0, 2));
-            ImGui::Text("Minion will fill up in %f hours", minion_calculation_data.storage_fill_up_time);
-            if (!minion_simple_calculation)
+            if(ImGui::BeginListBox("##Minion Info", ImVec2(400, 200)))
             {
-                ImGui::Text("DROPS:");
-                for (const auto &drop: minion_calculation_data.minion_drops)
+                ImGui::Text("Minion Production Rate: %f s", minion_calculation_data.minion_production_rate);
+                ImGui::Dummy(ImVec2(0, 2));
+                ImGui::Text("Minion will fill up in %f hours", minion_calculation_data.storage_fill_up_time);
+                if (!minion_simple_calculation)
                 {
-                    if (minion_compact) ImGui::BeginListBox("##DROPINFO", ImVec2(270, 95));
+                    ImGui::Text("DROPS:");
+                    for (const auto &drop: minion_calculation_data.minion_drops)
+                    {
+                    if (compact_mode) ImGui::BeginListBox("##DROPINFO", ImVec2(270, 95));
 
                     ImGui::Text("%s : ", item::items[drop.first].name.c_str());
                     ImGui::Text("Production per hour: %f", minion_calculation_data.drops_per_hour[drop.first]);
@@ -600,36 +604,38 @@ void render_loop(GLFWwindow *window)
                     ImGui::Text("Profit per hour (Bazaar): %f",
                                 minion_calculation_data.bazaar_profit_per_hour[drop.first]);
 
-                    if (minion_compact) ImGui::EndListBox();
+                    if (compact_mode) ImGui::EndListBox();
 
                     else imgui_util::dummy(0, 5);
-                }
+                    }
 
-                for (auto skill: minion_calculation_data.skill_xp_drops)
-                {
+                    for (auto skill: minion_calculation_data.skill_xp_drops)
+                    {
                     ImGui::Text("%s xp (per hour): %f", to_string(skill.first), skill.second);
+                    }
+
+                    imgui_util::dummy(0, 10);
+                }
+                else
+                {
+                    ImGui::Text("Sum Profit per hour (NPC): %f", minion_calculation_data.sum_profit_npc);
+                    ImGui::Text("Sum Profit per hour (Bazaar): %f", minion_calculation_data.sum_profit_bazaar);
+                    imgui_util::dummy(0, 10);
+
+                    ImGui::Text("Sum profit per day (NPC): %f", minion_calculation_data.sum_profit_npc * 24);
+                    ImGui::Text("Sum profit per day (Bazaar): %f", minion_calculation_data.sum_profit_bazaar * 24);
                 }
 
-                imgui_util::dummy(0, 10);
-            }
-            else
-            {
-                ImGui::Text("Sum Profit per hour (NPC): %f", minion_calculation_data.sum_profit_npc);
-                ImGui::Text("Sum Profit per hour (Bazaar): %f", minion_calculation_data.sum_profit_bazaar);
-                imgui_util::dummy(0, 10);
-
-                ImGui::Text("Sum profit per day (NPC): %f", minion_calculation_data.sum_profit_npc * 24);
-                ImGui::Text("Sum profit per day (Bazaar): %f", minion_calculation_data.sum_profit_bazaar * 24);
+                if (minion_calculation_data.minion_recipe != crafting_recipe())
+                {
+                    ImGui::Text("Minion Recipe: %s", minion_calculation_data.minion_recipe.get_recipe_string().c_str());
+                    ImGui::Text("Return Ratio: %f hours", minion_calculation_data.minion_return_ratio);
+                }
+                ImGui::EndListBox();
             }
 
-            if (minion_calculation_data.minion_recipe != crafting_recipe())
-            {
-                ImGui::Text("Minion Recipe: %s", minion_calculation_data.minion_recipe.get_recipe_string().c_str());
-                ImGui::Text("Return Ratio: %f hours", minion_calculation_data.minion_return_ratio);
-            }
-              
 
-            ImGui::EndListBox();
+            
 
             ImGui::PopStyleVar();
             if (ImGui::Button("Back to main menu", ImVec2(400, 40)))

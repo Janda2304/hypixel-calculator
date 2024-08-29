@@ -1,10 +1,13 @@
 ﻿#pragma once
-#include <array>
-#include <memory>
+#include <memory.h>
 #include <imgui.h>
+#include <cstdio>
 #include <unistd.h>
 #include <nlohmann/json.hpp>
 
+#ifdef _WIN32
+#include <windows.h>
+#endif
 
 struct myseps : std::numpunct<char>
 {
@@ -38,11 +41,25 @@ public:
     }
 
     static std::string get_exe_path()
+{
+    char result[1024];
+    
+#ifdef _WIN32
+    DWORD count = GetModuleFileNameA(nullptr, result, 1024);
+    if (count == 0)
     {
-        char result[1024];
-        ssize_t count = readlink("/proc/self/exe", result, 1024);
-        return std::string(result, (count > 0) ? count : 0);
+        return std::string();
     }
+#else
+    ssize_t count = readlink("/proc/self/exe", result, 1024);
+    if (count == -1)
+    {
+        return std::string();
+    }
+#endif
+
+    return std::string(result, count);
+}
 
     static std::string format_numbers(int value)
     {
