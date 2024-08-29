@@ -1,10 +1,8 @@
-﻿#include "crafting_recipe.h"
-
+﻿#include <crafting_recipe.h>
 #include <iostream>
-
-#include "item.h"
-#include "../nlohmann/json.hpp"
-#include "../minions/minion_calculator.h"
+#include <minion_calculator.h>
+#include <item.h>
+#include <minion.h>
 
 
 std::map<std::string, crafting_recipe> crafting_recipe::recipes;

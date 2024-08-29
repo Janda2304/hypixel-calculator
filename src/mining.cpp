@@ -1,9 +1,8 @@
-﻿#include "mining.h"
+﻿#include <color.hpp>
+#include <helper.hpp>
 #include <imgui.h>
-
-#include "helper.hpp"
 #include <imgui_util.h>
-#include "src/color.hpp"
+#include <mining.h>
 
 
 int mining::mining_speed;

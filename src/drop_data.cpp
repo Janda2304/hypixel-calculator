@@ -1,4 +1,6 @@
-﻿#include "drop_data.h"
+﻿#include <drop_data.h>
+
+#include <nlohmann/json.hpp>
 
 
 nlohmann::json drop_data::serialize() const

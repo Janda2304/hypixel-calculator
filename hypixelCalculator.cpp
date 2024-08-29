@@ -1,18 +1,18 @@
-﻿#include <glfw3.h>
-
-#include "drop_chance_calculator.h"
-#include "farming.h"
-#include "helper.hpp"
-#include "imgui.h"
+﻿#include <color.hpp>
+#include <drop_chance_calculator.h>
+#include <farming.h>
+#include <glfw3.h>
+#include <helper.hpp>
+#include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
-#include "mining.h"
 #include <imgui_util.h>
-#include "minions/minion_calculator.h"
-#include "src/color.hpp"
-#include "src/minion_calculation_data.h"
-#include "src/settings_data.hpp"
-#include "src/style_config.h"
+#include <item.h>
+#include <mining.h>
+#include <minion_calculation_data.h>
+#include <minion_calculator.h>
+#include <settings_data.hpp>
+#include <style_config.h>
 
 bool show_mgs = false;
 bool show_farming = false;
@@ -51,7 +51,7 @@ ImVec4 clicked_color = color::black(0.75f);
 
 void imgui_init(GLFWwindow *window)
 {
-    settings_data = settings_data::load("../data/settings.json");
+    settings_data = settings_data::load("data/settings.json");
     best_minion_display_amount = settings_data.best_minion_display_amount;
     compact_mode = settings_data.compact_ui;
     ironman = settings_data.ironman_mode;
@@ -64,7 +64,7 @@ void imgui_init(GLFWwindow *window)
     (void) io;
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init("#version 130");
-    io.Fonts->AddFontFromFileTTF("../fonts/Roboto-Regular.ttf", 18.0f);
+    io.Fonts->AddFontFromFileTTF("fonts/Roboto-Regular.ttf", 18.0f);
 
     ImGui::StyleColorsDark();
 }
@@ -92,7 +92,7 @@ void render_loop(GLFWwindow *window)
 
         ImGuiStyle &style = ImGui::GetStyle();
 
-        style_config::load_config("../data/styles.json", style);
+        style_config::load_config("data/styles.json", style);
         style_config::style_vars[ImGuiStyleVar_GrabRounding] = 3;
         style.Colors[ImGuiCol_FrameBgHovered] = color::black(0.5f);
         style.Colors[ImGuiCol_ButtonHovered] = color(0.176f, 0.176f, 0.164f, 1);
@@ -167,7 +167,7 @@ void render_loop(GLFWwindow *window)
 
                 if (ImGui::Button("Exit", default_button_size))
                 {
-                    settings_data.save("../data/settings.json");
+                    settings_data.save("/data/settings.json");
                     exit(0);
                 }
             }
@@ -205,7 +205,7 @@ void render_loop(GLFWwindow *window)
                 settings_data.compact_ui = compact_mode;
                 settings_data.ironman_mode = ironman;
                 settings_data.use_bazaar_enchanted_variants = minion_calculator::use_bazaar_enchanted_variants;
-                settings_data.save("../data/settings.json");
+                settings_data.save("/data/settings.json");
                 
                 show_settings = false;
             }
@@ -659,13 +659,13 @@ void render_loop(GLFWwindow *window)
 int main()
 {
     // initialize the data
-    minion_calculator::init_fuels("../data/minion_fuels.json");
-    minion_calculator::init_minions("../data/minions.json");
-    minion_calculator::init_items("../data/items.json");
-    minion_calculator::init_recipes("../data/item_recipes.json");
+    minion_calculator::init_fuels("data/minion_fuels.json");
+    minion_calculator::init_minions("data/minions.json");
+    minion_calculator::init_items("data/items.json");
+    minion_calculator::init_recipes("data/item_recipes.json");
     //minion_calculator::init_recipes("../data/minion_recipes.json");
-    minion_calculator::init_recipes("../data/item_recipes_new.json");
-    minion_calculator::init_buy_requirements("../data/item_buy_requirements.json");
+    minion_calculator::init_recipes("data/item_recipes_new.json");
+    minion_calculator::init_buy_requirements("data/item_buy_requirements.json");
 
 
     // Initialize GLFW

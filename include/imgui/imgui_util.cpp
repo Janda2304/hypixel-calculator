@@ -1,5 +1,5 @@
 #include "imgui_util.h"
-#include "../../src/color.hpp"
+#include <color.hpp>
 
 void imgui_util::change_background_color(const ImVec4 color)
 {

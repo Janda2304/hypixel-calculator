@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 #include "drop_data.h"
-#include "../nlohmann/json.hpp"
+#include <nlohmann/json.hpp>
 
 enum minion_type
 {

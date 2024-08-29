@@ -20,6 +20,9 @@ file(GLOB IMGUI_SOURCES
         include/imgui/imgui_draw.cpp
 )
 
+file(COPY data DESTINATION ${CMAKE_BINARY_DIR})  
+file(COPY fonts DESTINATION ${CMAKE_BINARY_DIR})
+
 add_executable(hypixel_calculator
         src/buy_requirements.cpp
         src/crafting_recipe.cpp
@@ -27,14 +30,12 @@ add_executable(hypixel_calculator
         src/item.cpp
         src/minion.cpp
         src/minion_fuel.cpp
-        farming.cpp
+        src/farming.cpp
         hypixelCalculator.cpp
-        mining.cpp
-        minions/minion_calculator.cpp
+        src/mining.cpp
+        src/minion_calculator.cpp
         src/item_xp_drop.cpp
-        src/color.hpp
-        src/settings_data.hpp
-        drop_chance_calculator.cpp
+        src/drop_chance_calculator.cpp
         src/style_config.cpp
         ${IMGUI_SOURCES}
 )
@@ -48,6 +49,7 @@ target_include_directories(hypixel_calculator PRIVATE
         include/GLFW
         include/imgui
         include/json
+        include/hypixel-calculator
 
 )
 

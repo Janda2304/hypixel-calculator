@@ -1,7 +1,7 @@
-﻿#include "item.h"
+﻿#include <item.h>
 
-#include "crafting_recipe.h"
-#include "../minions/minion_calculator.h"
+#include <crafting_recipe.h>
+#include <minion_calculator.h>
 
 
 std::unordered_map<std::string, item> item::items;

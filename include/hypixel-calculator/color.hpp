@@ -1,6 +1,7 @@
 #ifndef COLOR_H
 #define COLOR_H
 
+#include <imgui.h>
 #include <nlohmann/json.hpp>
 
 

@@ -2,9 +2,9 @@
 #include <string>
 #include <map>
 
-#include "../src/minion_fuel.h"
-#include "../src/minion.h"
-#include "../src/minion_calculation_data.h"
+#include <minion_fuel.h>
+#include <minion.h>
+#include <minion_calculation_data.h>
 
 
 class minion_calculator

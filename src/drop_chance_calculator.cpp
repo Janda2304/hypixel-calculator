@@ -1,10 +1,8 @@
-#include "drop_chance_calculator.h"
-
-#include <imgui.h>
+#include <drop_chance_calculator.h>
 
 #include <imgui_util.h>
-#include "src/color.hpp"
-
+#include <imgui.h>
+#include <color.hpp>
 
 float drop_chance_calculator::magic_find;
 float drop_chance_calculator::default_drop_chance;

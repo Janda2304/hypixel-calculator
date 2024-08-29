@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include <string>
-#include "../nlohmann/json.hpp"
+#include <nlohmann/json.hpp>
 
 struct crafting_recipe
 {

@@ -1,19 +1,18 @@
-﻿#include "minion_calculator.h"
+﻿#include <buy_requirements.h>
+#include <crafting_recipe.h>
+#include <drop_data.h>
 #include <fstream>
+#include <fuel_calculation_data.h>
+#include <helper.hpp>
 #include <iostream>
+#include <item.h>
 #include <map>
+#include <minion_calculation_data.h>
+#include <minion_calculator.h>
+#include <minion_fuel.h>
 #include <queue>
+#include <minion.h>
 #include <sstream>
-
-
-#include "../helper.hpp"
-#include "../src/crafting_recipe.h"
-#include "../src/drop_data.h"
-#include "../src/item.h"
-#include "../src/minion_fuel.h"
-#include "../src/buy_requirements.h"
-#include "../src/fuel_calculation_data.h"
-#include "../src/minion_calculation_data.h"
 
 
 bool minion_calculator::diamond_spreading = false;

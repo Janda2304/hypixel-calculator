@@ -1,5 +1,4 @@
-﻿#include "minion_fuel.h"
-
+﻿#include <minion_fuel.h>
 #include <iostream>
 
 std::map<std::string, minion_fuel> minion_fuel::minion_fuels;

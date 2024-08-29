@@ -1,6 +1,5 @@
-
-
-#include "item_xp_drop.h"
+#include <item_xp_drop.h>
+#include <nlohmann/json.hpp>
 
 nlohmann::json item_xp_drop::serialize() const
 {

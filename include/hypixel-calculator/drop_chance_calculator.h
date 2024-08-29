@@ -1,6 +1,9 @@
 #ifndef DROP_CHANCE_CALCULATOR_H
 #define DROP_CHANCE_CALCULATOR_H
 
+#include <imgui_util.h>
+#include <imgui.h>
+#include <color.hpp>
 
 
 class drop_chance_calculator

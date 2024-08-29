@@ -1,6 +1,6 @@
 ﻿#include "buy_requirements.h"
-
 #include <iostream>
+#include <map>
 
 std::map<std::string, item_buy_requirements> item_buy_requirements::buy_requirements;
 

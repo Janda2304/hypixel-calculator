@@ -1,8 +1,7 @@
-
-
 #ifndef ITEM_XP_DROP_H
 #define ITEM_XP_DROP_H
-#include "../nlohmann/json.hpp"
+
+#include <nlohmann/json.hpp>
 
 enum skills
 {

@@ -1,8 +1,8 @@
 ﻿#pragma once
 #include <string>
 
-#include "item_xp_drop.h"
-#include "../nlohmann/json.hpp"
+#include <item_xp_drop.h>
+#include "nlohmann/json.hpp"
 
 struct drop_data
 {
