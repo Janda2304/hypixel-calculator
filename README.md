@@ -6,6 +6,5 @@
 
 
 ## HOW TO USE
-idk figure it out<br>
-you need to build it then add data folder to it <br>
-i'll maybe do it sometime but don't expect it to be soon
+idk figure it out
+you need to build it using cmake 
