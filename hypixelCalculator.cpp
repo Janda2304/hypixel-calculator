@@ -81,7 +81,7 @@ void imgui_shutdown()
 // Main rendering loop
 void render_loop(GLFWwindow *window)
 {
-    // Main loop
+    // Main loop 
     while (!glfwWindowShouldClose(window))
     {
         glfwPollEvents();
@@ -228,47 +228,46 @@ void render_loop(GLFWwindow *window)
             static char fuel_filter_buffer[256] = "";
 
 
-            ImGui::BeginListBox("##Fuel Selection", ImVec2(305, 230));
-
-            imgui_util::change_item_width(300);
-            imgui_util::change_item_spacing_y(5);
-
-            ImGui::PushStyleColor(ImGuiCol_FrameBg, color::feldgrau());
-
-            ImGui::InputText("##Search Fuels", fuel_filter_buffer, IM_ARRAYSIZE(fuel_filter_buffer));
-            ImGui::PopStyleColor();
-            ImGui::BeginListBox("##Fuels");
-
-            ImGui::PushStyleColor(ImGuiCol_Header, color::feldgrau());
-            ImGui::PushStyleColor(ImGuiCol_HeaderHovered, color::black_olive(0.6f));
-            ImGui::PushStyleColor(ImGuiCol_HeaderActive, color::black_olive());
-            for (size_t i = 0; i < fuel_names.size(); ++i)
+            if(ImGui::BeginListBox("##FUEL_SELECTION", ImVec2(305, 230)))
             {
-                // Convert the fuel name to lowercase
-                std::string fuel_name_lowercase = fuel_names[i];
-                std::transform(fuel_name_lowercase.begin(), fuel_name_lowercase.end(), fuel_name_lowercase.begin(), tolower);
+                imgui_util::change_item_width(300);
+                imgui_util::change_item_spacing_y(5);
 
-                std::string fuel_filter_lowercase = fuel_filter_buffer;
-                std::transform(fuel_filter_lowercase.begin(), fuel_filter_lowercase.end(), fuel_filter_lowercase.begin(), tolower);
+                ImGui::PushStyleColor(ImGuiCol_FrameBg, color::feldgrau());
 
-                // Apply case-insensitive filter
-                if (fuel_filter_lowercase.empty() || fuel_name_lowercase.find(fuel_filter_lowercase) != std::string::npos)
+                ImGui::InputText("##Search Fuels", fuel_filter_buffer, IM_ARRAYSIZE(fuel_filter_buffer));
+                ImGui::PopStyleColor();
+                if (ImGui::BeginListBox("##FUELS"))
                 {
-                    bool is_selected = (minion_calculator::selected_fuel_index == static_cast<int>(i));
+                    ImGui::PushStyleColor(ImGuiCol_Header, color::feldgrau());
+                    ImGui::PushStyleColor(ImGuiCol_HeaderHovered, color::black_olive(0.6f));
+                    ImGui::PushStyleColor(ImGuiCol_HeaderActive, color::black_olive());
+                    for (size_t i = 0; i < fuel_names.size(); ++i)
+                    {
+                        // Convert the fuel name to lowercase
+                        std::string fuel_name_lowercase = fuel_names[i];
+                        std::transform(fuel_name_lowercase.begin(), fuel_name_lowercase.end(), fuel_name_lowercase.begin(), tolower);
 
-                    if (ImGui::Selectable(fuel_names[i], is_selected)) minion_calculator::selected_fuel_index = static_cast<int>(i);
+                        std::string fuel_filter_lowercase = fuel_filter_buffer;
+                        std::transform(fuel_filter_lowercase.begin(), fuel_filter_lowercase.end(), fuel_filter_lowercase.begin(), tolower);
 
-                    if (is_selected) ImGui::SetItemDefaultFocus();
+                        // Apply case-insensitive filter
+                        if (fuel_filter_lowercase.empty() || fuel_name_lowercase.find(fuel_filter_lowercase) != std::string::npos)
+                        {
+                            bool is_selected = (minion_calculator::selected_fuel_index == static_cast<int>(i));
+
+                            if (ImGui::Selectable(fuel_names[i], is_selected)) minion_calculator::selected_fuel_index = static_cast<int>(i);
+
+                            if (is_selected) ImGui::SetItemDefaultFocus();
+                        }
+                    }
+                    ImGui::PopStyleColor(3);
+                    ImGui::EndListBox(); //##FUELS
                 }
+                ImGui::Text("Current Fuel: %s", fuel_names[minion_calculator::selected_fuel_index]);
+                ImGui::EndListBox(); //##FUEL_SELECTION
             }
-            ImGui::PopStyleColor(3);
-
-
-            ImGui::EndListBox();
-
-
-            ImGui::Text("Current Fuel: %s", fuel_names[minion_calculator::selected_fuel_index]);
-            ImGui::EndListBox();
+          
 
 
             ImGui::PopStyleVar();
@@ -378,9 +377,10 @@ void render_loop(GLFWwindow *window)
                 
                     ImGui::Text(profit_per_day_npc_formatted.c_str());
                     ImGui::Text(profit_per_day_bazaar_formatted.c_str());
+                    ImGui::EndListBox();
                 }
                 
-                ImGui::EndListBox();
+              
                 if (minion_info_size.x > 1520 && minion_info_size.x < 1820)
                 {
                     if (i % 5 != 4)
@@ -429,11 +429,8 @@ void render_loop(GLFWwindow *window)
                     }
 
                 }
-
-
-               
-               
             }
+
             }
             
             ImGui::EndListBox();

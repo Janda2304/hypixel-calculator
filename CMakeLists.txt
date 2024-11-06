@@ -4,9 +4,6 @@ project(hypixel_calculator)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-
-
-
 set(GLFW_DIR "include/GLFW")
 
 file(GLOB IMGUI_SOURCES
@@ -20,7 +17,7 @@ file(GLOB IMGUI_SOURCES
         include/imgui/imgui_draw.cpp
 )
 
-file(COPY data DESTINATION ${CMAKE_BINARY_DIR})  
+file(COPY data DESTINATION ${CMAKE_BINARY_DIR})
 file(COPY fonts DESTINATION ${CMAKE_BINARY_DIR})
 
 add_executable(hypixel_calculator
@@ -40,17 +37,11 @@ add_executable(hypixel_calculator
         ${IMGUI_SOURCES}
 )
 
-if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static-libgcc -static-libstdc++")
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static")
-endif()
-
 target_include_directories(hypixel_calculator PRIVATE
         include/GLFW
         include/imgui
         include/json
         include/hypixel-calculator
-
 )
 
 # Link GLFW
@@ -58,15 +49,9 @@ find_package(OpenGL REQUIRED)
 
 if (WIN32)
     find_library(GLFW_LIBRARY NAMES glfw3 HINTS ${CMAKE_SOURCE_DIR}/lib)
+    target_link_libraries(hypixel_calculator PRIVATE ${GLFW_LIBRARY} OpenGL::GL gdi32)
 else()
     find_package(PkgConfig REQUIRED)
-    pkg_search_module(GLFW REQUIRED glfw3)
+    pkg_check_modules(GLFW REQUIRED glfw3)
+    target_link_libraries(hypixel_calculator PRIVATE ${GLFW_LIBRARIES} OpenGL::GL)
 endif()
-
-target_link_libraries(hypixel_calculator PRIVATE
-        ${GLFW_LIBRARY}
-        OpenGL::GL
-        gdi32
-)
-
-
